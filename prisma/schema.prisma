@@ -1,0 +1,131 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  resetToken     String?   @db.VarChar(255)
+  resetTokenExp  DateTime?
+  createdAt DateTime @default(now())
+}
+
+model Event {
+  id              String   @id @default(uuid())
+  title           String
+  date            DateTime
+  image           String
+  description     String?
+  time            String?
+  location        String?
+  eligibility     Eligibility
+  agenda          String?
+  isFree          Boolean  @default(true)
+  hasCertificate  Boolean  @default(false)
+  hasRefreshments Boolean  @default(false)
+  isLimited       Boolean  @default(false)
+  transportation  Boolean  @default(false) 
+  accommodation   Boolean  @default(false) 
+  createdAt       DateTime @default(now())
+}
+
+enum Eligibility {
+  Open
+  FacultyStudents
+  MembersOnly
+}
+
+model NewsItem {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  summary   String
+  content   String
+  date      DateTime
+  image     String?
+  category  String
+  author    String
+  readTime  String
+  featured  Boolean  @default(false)
+}
+
+model GalleryEvent {
+  id               String   @id @default(uuid())
+  title            String
+  description      String
+  mainImage        String
+  additionalImages String[] 
+  category         String
+  date             DateTime
+  size             GallerySize
+  rotation         Int
+  location         String?
+  attendees        Int?
+  tags             String[]
+}
+
+enum GallerySize {
+  small
+  medium
+  large
+}
+
+model MediaItem {
+  id        String   @id @default(uuid())
+  filename  String
+  url       String
+  uploadedAt DateTime @default(now())
+  uploadedBy String
+  type      String    
+}
+
+model Dean {
+  id    String @id @default(uuid())
+  name  String
+  title String
+}
+
+model Member {
+  id        String   @id @default(uuid())
+  name      String
+  position  String
+  image     String?
+  
+  // Relation to ExcoSection as a member
+  exco      ExcoSection? @relation(fields: [excoId], references: [id])
+  excoId    String?
+  heads     ExcoSection[] @relation("Head")  
+}
+
+model ExcoSection {
+  id        String        @id @default(uuid())
+  category  ExcoCategory
+  headId    String?       @unique
+  head      Member?       @relation("Head", fields: [headId], references: [id])
+  members   Member[]
+}
+
+enum ExcoCategory {
+  ExcoMT
+  ExcoSukan
+  ExcoMedia
+  ExcoAkademik
+  ExcoKebajikan
+  ExcoKeusahawanan
+  ExcoKerohanian
+  ExcoLuar
+  ExcoPenerbitan
+  ExcoICT
+}
