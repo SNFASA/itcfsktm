@@ -21,6 +21,9 @@ export default function GalleryFilter({
   onSortChange,
   onClearFilters,
 }: Readonly<GalleryFilterProps>) {
+  // Ensure categories is always an array
+  const safeCategories = Array.isArray(categories) ? categories : []
+
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
       <div className="flex flex-col lg:flex-row gap-6 items-center">
@@ -63,7 +66,7 @@ export default function GalleryFilter({
             className="w-full lg:w-auto px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white"
           >
             <option value="">All Categories</option>
-            {categories.map((category) => (
+            {safeCategories.map((category) => (
               <option key={category} value={category}>
                 {category}
               </option>

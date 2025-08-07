@@ -1,27 +1,36 @@
-// /app/api/auth/forgot.ts
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/admin/prisma";
-import crypto from "crypto";
+// app/api/auth/forgot.ts
+import { supabase } from '@/lib/supabaseClient';
+import { NextResponse } from 'next/server';
+import crypto from 'node:crypto';
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   const { email } = await req.json();
-  const user = await prisma.user.findUnique({ where: { email } });
 
-  if (!user) return NextResponse.json({ error: "Email not found" }, { status: 404 });
+  const { data: user } = await supabase
+    .from('user')
+    .select('*')
+    .eq('email', email)
+    .single();
 
-  const token = crypto.randomBytes(32).toString("hex");
-  const expiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+  if (!user) {
+    return NextResponse.json({ error: 'Email not found' }, { status: 404 });
+  }
 
-  await prisma.user.update({
-    where: { email },
-    data: {
-      resetToken: token,
-      resetTokenExp: expiry,
-    },
-  });
+  const token = crypto.randomBytes(32).toString('hex');
+  const expiry = new Date(Date.now() + 3600_000).toISOString(); // 1 hour
+
+  const { error: updateError } = await supabase
+    .from('user')
+    .update({ resetToken: token, resetTokenExp: expiry })
+    .eq('email', email);
+
+  if (updateError) {
+    return NextResponse.json({ error: updateError.message }, { status: 500 });
+  }
 
   const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password/${token}`;
-  console.log(`Reset URL: ${resetUrl}`); // ganti dengan actual email sending logic
+  console.log(`Reset URL: ${resetUrl}`);
 
-  return NextResponse.json({ message: "Reset email sent" });
+  // TODO: Send email with resetUrl
+  return NextResponse.json({ message: 'Reset email sent' });
 }

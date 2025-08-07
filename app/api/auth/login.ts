@@ -1,17 +1,26 @@
-import { prisma } from "@/lib/admin/prisma";
-import { comparePassword } from "@/lib/admin/auth";
-import { NextApiRequest, NextApiResponse } from "next";
+// app/api/auth/login.ts
+import { supabase } from '@/lib/supabaseClient';
+import { NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
 
-export default async function loginHandler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).end();
+export async function POST(req: Request) {
+  const { email, password } = await req.json();
 
-  const { email, password } = req.body;
+  const { data: user } = await supabase
+    .from('user')
+    .select('*')
+    .eq('email', email)
+    .single();
 
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return res.status(401).json({ error: "User not found" });
+  if (!user) {
+    return NextResponse.json({ error: 'User not found' }, { status: 404 });
+  }
 
-  const isValid = await comparePassword(password, user.password);
-  if (!isValid) return res.status(401).json({ error: "Invalid credentials" });
+  const isValid = await bcrypt.compare(password, user.password);
 
-  return res.status(200).json({ message: "Login successful", userId: user.id });
+  if (!isValid) {
+    return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+  }
+
+  return NextResponse.json({ message: 'Login successful' });
 }

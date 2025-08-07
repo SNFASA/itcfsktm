@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import EventCard from '@/components/public/ui/EventCard'
@@ -11,7 +12,20 @@ export default function EventsSection() {
     threshold: 0.1,
   })
 
-  const fadeVariant = {
+  const [events, setEvents] = useState<EventData[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const data = await getRecentEvents()
+      setEvents(data)
+      setLoading(false)
+    }
+
+    fetchEvents()
+  }, [])
+
+  const fadeInUp = {
     hidden: { opacity: 0, y: 60 },
     visible: { opacity: 1, y: 0 },
   }
@@ -24,25 +38,18 @@ export default function EventsSection() {
       },
     },
   }
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 60 },
-    visible: { opacity: 1, y: 0 },
-  }
+
   const slideInVariants = {
     hidden: { opacity: 0, y: 50, scale: 0.9 },
     visible: { opacity: 1, y: 0, scale: 1 },
   }
 
-  const events: EventData[] = getRecentEvents()
-
-  const isComingSoon = (dateStr: string): boolean => {
-    const today = new Date()
-    const eventDate = new Date(dateStr)
-    return eventDate > today
-  }
-
   return (
-    <section id="events" ref={ref} className="relative bg-gradient-to-br from-medium-gray via-medium-gray to-gray-100 py-16 sm:py-20 lg:py-24 xl:py-28 overflow-hidden"  >
+    <section
+      id="events"
+      ref={ref}
+      className="relative bg-gradient-to-br from-medium-gray via-medium-gray to-gray-100 py-16 sm:py-20 lg:py-24 xl:py-28 overflow-hidden"
+    >
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse" />
@@ -81,42 +88,47 @@ export default function EventsSection() {
           >
             Join us for exciting tech events, workshops, and activities throughout the year
           </motion.p>
-        </motion.div>              
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 lg:gap-10"
-          variants={staggerContainer}
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-        >
-          {events.map((event, index) => (
-            <motion.div
-              key={event.id}
-              variants={slideInVariants}
-              transition={{ duration: 0.6 }}
-              className="group relative"
-            >
-              <div className="absolute -top-3 -left-3 z-20 w-8 h-8 bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform duration-300">
-                <span className="text-white/80 font-bold text-sm">{index + 1}</span>
-              </div>
-
-              <div className="relative transform transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02]">
-                <EventCard
-                  key={event.id}
-                  title={event.title}
-                  date={event.date}
-                  image={event.image}
-                  description={event.description}
-                  time={event.time}
-                  location={event.location}
-                  eligibility={event.eligibility}
-                  details={event.details}
-                  onRegister={() => console.log(`Register for ${event.title}`)}
-                />
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl transform scale-110" />
-              </div>
-            </motion.div>
-          ))}
         </motion.div>
+
+        {loading ? (
+          <p className="text-center text-gray-500 font-karla text-lg">Loading events...</p>
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 lg:gap-10"
+            variants={staggerContainer}
+            initial="hidden"
+            animate={inView ? 'visible' : 'hidden'}
+          >
+            {events.map((event, index) => (
+              <motion.div
+                key={event.id}
+                variants={slideInVariants}
+                transition={{ duration: 0.6 }}
+                className="group relative"
+              >
+                <div className="absolute -top-3 -left-3 z-20 w-8 h-8 bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-white/80 font-bold text-sm">{index + 1}</span>
+                </div>
+
+                <div className="relative transform transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02]">
+                  <EventCard
+                    key={event.id}
+                    title={event.title}
+                    date={event.date}
+                    image={event.image}
+                    description={event.description}
+                    time={event.time}
+                    location={event.location}
+                    eligibility={event.eligibility}
+                    details={event.details}
+                    onRegister={() => console.log(`Register for ${event.title}`)}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl transform scale-110" />
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
     </section>
   )

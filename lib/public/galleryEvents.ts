@@ -1,4 +1,5 @@
-// lib/galleryEvents.ts
+
+import { supabase } from "@/lib/supabaseClient"
 
 export interface GalleryEvent {
   id: string
@@ -244,20 +245,102 @@ export const allGalleryEvents: GalleryEvent[] = [
 ]
 
 // Helper functions for data manipulation
-export const getEventById = (id: string): GalleryEvent | undefined => {
-  return allGalleryEvents.find(event => event.id === id)
+
+// Get event by ID
+export const getEventById = async (id: string): Promise<GalleryEvent | undefined> => {
+  try {
+    const { data, error } = await supabase
+      .from('gallery_events')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (error) {
+      console.error('Error fetching event by ID:', error)
+      return undefined
+    }
+
+    return data as GalleryEvent
+  } catch (error) {
+    console.error('Error fetching event by ID:', error)
+    return undefined
+  }
 }
 
-export const getEventsByCategory = (category: string): GalleryEvent[] => {
-  return allGalleryEvents.filter(event => event.category === category)
+// Get events by category
+export const getEventsByCategory = async (category: string): Promise<GalleryEvent[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('gallery_events')
+      .select('*')
+      .eq('category', category)
+
+    if (error) {
+      console.error('Error fetching events by category:', error)
+      return []
+    }
+
+    return data as GalleryEvent[]
+  } catch (error) {
+    console.error('Error fetching events by category:', error)
+    return []
+  }
 }
 
-export const getAllCategories = (): string[] => {
+// Get all unique categories
+export const getAllCategories = async (): Promise<string[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('gallery_events')
+      .select('category')
+
+    if (error) {
+      console.error('Error fetching categories:', error)
+      // Return fallback categories from mock data
+      return Array.from(new Set(allGalleryEvents.map(event => event.category)))
+    }
+
+    if (!data || !Array.isArray(data)) {
+      console.warn('No categories data returned from database, using fallback')
+      return Array.from(new Set(allGalleryEvents.map(event => event.category)))
+    }
+
+    const categories = data.map(item => item.category).filter(Boolean)
+    return Array.from(new Set(categories))
+  } catch (error) {
+    console.error('Error fetching categories:', error)
+    // Return fallback categories from mock data
+    return Array.from(new Set(allGalleryEvents.map(event => event.category)))
+  }
+}
+
+// Get recent events (ordered by date descending)
+export const getRecentEvents = async (limit: number = 6): Promise<GalleryEvent[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('gallery_events')
+      .select('*')
+      .order('date', { ascending: false })
+      .limit(limit)
+
+    if (error) {
+      console.error('Error fetching recent events:', error)
+      return []
+    }
+
+    return data as GalleryEvent[]
+  } catch (error) {
+    console.error('Error fetching recent events:', error)
+    return []
+  }
+}
+
+// Fallback function to get categories from mock data
+export const getCategoriesFromMockData = (): string[] => {
   return Array.from(new Set(allGalleryEvents.map(event => event.category)))
 }
 
-export const getRecentEvents = (limit: number = 6): GalleryEvent[] => {
+// Fallback function to get all events from mock data
+export const getAllEventsFromMockData = (): GalleryEvent[] => {
   return allGalleryEvents
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, limit)
 }

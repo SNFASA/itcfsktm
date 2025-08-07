@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
@@ -192,8 +192,27 @@ export default function GallerySection() {
     threshold: 0.1,
   })
 
-  // Get recent events for the homepage gallery
-  const recentEvents = getRecentEvents(6)
+  // State for storing events
+  const [recentEvents, setRecentEvents] = useState<GalleryEvent[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Fetch events on component mount
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setIsLoading(true)
+        const events = await getRecentEvents(6)
+        setRecentEvents(events)
+      } catch (error) {
+        console.error('Error fetching recent events:', error)
+        setRecentEvents([]) // Fallback to empty array
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchEvents()
+  }, [])
 
   return (
     <section id="gallery" ref={ref} className="relative bg-gradient-to-br from-medium-gray via-medium-gray to-gray-100 py-16 sm:py-20 lg:py-24 xl:py-28 overflow-hidden">
@@ -244,9 +263,26 @@ export default function GallerySection() {
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
         >
-          {recentEvents.map((event) => (
-            <GalleryCard key={event.id} event={event} />
-          ))}
+          {isLoading ? (
+            // Loading skeleton
+            <div className="flex flex-wrap justify-center gap-6 sm:gap-8 lg:gap-10">
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="w-full sm:w-72 md:w-80 h-56 sm:h-64 bg-gray-200 animate-pulse rounded-xl"
+                />
+              ))}
+            </div>
+          ) : recentEvents.length > 0 ? (
+            recentEvents.map((event) => (
+              <GalleryCard key={event.id} event={event} />
+            ))
+          ) : (
+            // No events fallback
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg font-karla">No events to display at the moment.</p>
+            </div>
+          )}
         </motion.div>
 
         {/* View All Button */}

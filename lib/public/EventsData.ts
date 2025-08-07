@@ -226,30 +226,102 @@ export const events: EventData[] = [
 ]
 
 // Helper functions for data manipulation
-export const getRecentEvents = (limit = 6): EventData[] => {
-  return [...events]
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    .slice(0, limit)
+import { supabase } from "@/lib/supabaseClient"
+
+
+// Get recent events by ascending date
+export const getRecentEvents = async (limit = 6): Promise<EventData[]> => {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .order("date", { ascending: true })
+    .limit(limit)
+
+  if (error) {
+    console.error("Error fetching recent events:", error)
+    return []
+  }
+
+  return data as EventData[]
 }
 
-export const getEventsByEligibility = (eligibility: EventData['eligibility']): EventData[] => {
-  return events.filter(event => event.eligibility === eligibility)
+// Get events by eligibility
+export const getEventsByEligibility = async (
+  eligibility: EventData["eligibility"]
+): Promise<EventData[]> => {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("eligibility", eligibility)
+
+  if (error) {
+    console.error("Error fetching events by eligibility:", error)
+    return []
+  }
+
+  return data as EventData[]
 }
 
-export const getFreeEvents = (): EventData[] => {
-  return events.filter(event => event.details?.isFree === true)
+// Get only free events
+export const getFreeEvents = async (): Promise<EventData[]> => {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("details->>isFree", "true") // details is a JSON column
+
+  if (error) {
+    console.error("Error fetching free events:", error)
+    return []
+  }
+
+  return data as EventData[]
 }
 
-export const getEventsWithCertificates = (): EventData[] => {
-  return events.filter(event => event.details?.hasCertificate === true)
+// Get events that provide certificates
+export const getEventsWithCertificates = async (): Promise<EventData[]> => {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("details->>hasCertificate", "true") // from JSON field
+
+  if (error) {
+    console.error("Error fetching certificate events:", error)
+    return []
+  }
+
+  return data as EventData[]
 }
 
-export const getUpcomingEvents = (): EventData[] => {
-  const now = new Date()
-  return events.filter(event => new Date(event.date) > now)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+// Get upcoming events
+export const getUpcomingEvents = async (): Promise<EventData[]> => {
+  const nowISO = new Date().toISOString()
+
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .gt("date", nowISO)
+    .order("date", { ascending: true })
+
+  if (error) {
+    console.error("Error fetching upcoming events:", error)
+    return []
+  }
+
+  return data as EventData[]
 }
 
-export const getEventById = (id: string): EventData | undefined => {
-  return events.find(event => event.id === id)
+// Get event by ID
+export const getEventById = async (id: string): Promise<EventData | null> => {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("id", id)
+    .single()
+
+  if (error) {
+    console.error("Error fetching event by ID:", error)
+    return null
+  }
+
+  return data as EventData
 }
