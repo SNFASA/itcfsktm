@@ -1,29 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Your existing config
   experimental: {
     appDir: true,
   },
+  // Add images configuration
   images: {
-    domains: ['api.builder.io'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
+        hostname: 'oqnwecbjgvcomvhtxgdb.supabase.co',
         port: '',
-        pathname: '/**',
-      },
-      // Add other image domains you might use
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**',
+        pathname: '/storage/v1/object/public/**',
       },
       {
         protocol: 'https',
-        hostname: 'via.placeholder.com',
+        hostname: '*.supabase.co',
         port: '',
-        pathname: '/**',
+        pathname: '/storage/v1/object/public/**',
       },
     ],
   },

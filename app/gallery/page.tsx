@@ -1,17 +1,12 @@
-// app/about/page.tsx
+// app/gallery/page.tsx
 'use client'
-import Header from '@/components/public/Header'
-import GallerySection from '@/components/public/GallerySection'
-import Footer from '@/components/public/Footer'
 
-export default function AboutPage() {
+import  GallerySection  from '@/components/public/GallerySection'
+
+export default function GalleryPage() {
   return (
-    <>
-      <Header />
-      <main className="min-h-screen">
-        <GallerySection />
-      </main>
-      <Footer />
-    </>
+    <main className="min-h-screen">
+      <GallerySection />
+    </main>
   )
 }

@@ -42,29 +42,6 @@ export default function AboutSection() {
     threshold: 0.2,
   })
 
-  const floatingAnimation = {
-    animate: {
-      y: [-8, 8, -8],
-      rotate: [-2, 2, -2],
-      transition: {
-        duration: 6,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  }
-
-  const pulseAnimation = {
-    animate: {
-      scale: [1, 1.05, 1],
-      transition: {
-        duration: 4,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  }
-
   return (
     <section id="about" ref={ref} className="relative bg-gradient-to-br from-light-gray via-light-gray to-gray-50 py-16 sm:py-20 lg:py-24 xl:py-28 overflow-hidden">
       {/* Enhanced Background Decorations */}
@@ -130,8 +107,14 @@ export default function AboutSection() {
               {/* Outer Glow Effect */}
               <motion.div
                 className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5 blur-3xl transform scale-110"
-                variants={pulseAnimation}
-                animate="animate"
+                animate={{
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
               />
               
               {/* Gray blob (outermost layer) with enhanced styling */}
@@ -166,11 +149,17 @@ export default function AboutSection() {
                 style={{
                   borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%',
                 }}
-                variants={floatingAnimation}
-                animate="animate"
+                animate={{
+                  y: [-8, 8, -8],
+                  rotate: [-2, 2, -2],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
                 initial={{ opacity: 0, scale: 0.7, rotate: -5 }}
                 whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-                transition={{ delay: 0.6, duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
                 whileHover={{ scale: 1.05, rotate: 2 }}
               >
                 {/* Clear Pattern Background Only */}

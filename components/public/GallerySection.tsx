@@ -1,12 +1,14 @@
+// components/public/GallerySection.tsx
 'use client'
 import { useState, useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getRecentEvents, type GalleryEvent } from '@/lib/public/galleryEvents'
+import { getRecentGalleryItems } from '@/lib/public/galleryEvents'
+import type { GalleryItem } from '@/lib/public/gallery'
 
-const fadeInUp = {
+const fadeInUpSection = {
   hidden: { opacity: 0, y: 60 },
   visible: { opacity: 1, y: 0 },
 }
@@ -20,12 +22,12 @@ const staggerContainer = {
   },
 }
 
-const scaleIn = {
+const scaleInSection = {
   hidden: { opacity: 0, scale: 0.8, rotate: 0 },
   visible: { opacity: 1, scale: 1 },
 }
 
-const getSizeClasses = (size: 'small' | 'medium' | 'large') => {
+const getSizeClassesSection = (size: 'small' | 'medium' | 'large') => {
   switch (size) {
     case 'small':
       return 'w-full sm:w-64 md:w-72 h-48 sm:h-56'
@@ -38,34 +40,54 @@ const getSizeClasses = (size: 'small' | 'medium' | 'large') => {
   }
 }
 
-function GalleryCard({ event }: { event: GalleryEvent }) {
-  const [isHovered, setIsHovered] = useState(false)
+const getRandomRotationSection = (id: string) => {
+  // Use the ID to generate a consistent "random" rotation
+  const hash = id.split('').reduce((a, b) => {
+    a = ((a << 5) - a) + b.charCodeAt(0)
+    return a & a
+  }, 0)
+  return (hash % 15) - 7.5 // Range from -7.5 to 7.5 degrees
+}
+
+function GalleryCardSection({ item }: { item: GalleryItem }) {
   const [showPreview, setShowPreview] = useState(false)
 
   const handleMorePicsClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    // Navigate to individual event page
-    window.location.href = `/gallery/event/${event.id}`
+    window.location.href = `/gallery/event/${item.id}`
   }
 
   const handleCardClick = () => {
-    // Navigate to individual event page
-    window.location.href = `/gallery/event/${event.id}`
+    window.location.href = `/gallery/event/${item.id}`
   }
+
+  // Format date for display
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString)
+      return date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric', 
+        year: 'numeric' 
+      })
+    } catch {
+      return dateString
+    }
+  }
+
+  const rotation = getRandomRotationSection(item.id)
 
   return (
     <motion.div
       className="relative group cursor-pointer"
-      style={{ rotate: `${event.rotation}deg` }}
-      variants={scaleIn}
+      style={{ rotate: `${rotation}deg` }}
+      variants={scaleInSection}
       transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
       onHoverStart={() => {
-        setIsHovered(true)
         setTimeout(() => setShowPreview(true), 200)
       }}
       onHoverEnd={() => {
-        setIsHovered(false)
         setShowPreview(false)
       }}
       whileHover={{ 
@@ -77,12 +99,12 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
       onClick={handleCardClick}
     >
       {/* Main Card */}
-      <div className={`${getSizeClasses(event.size)} relative overflow-hidden rounded-xl shadow-xl hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-primary via-primary to-primary/90`}>
+      <div className={`${getSizeClassesSection(item.size)} relative overflow-hidden rounded-xl shadow-xl hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-blue-600 via-blue-600 to-blue-600/90`}>
         {/* Image Container */}
         <div className="relative h-3/4 overflow-hidden">
           <Image
-            src={event.mainImage}
-            alt={event.title}
+            src={item.main_image}
+            alt={item.title}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-110"
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
@@ -96,35 +118,60 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
           
           {/* Category badge */}
           <div className="absolute top-3 left-3">
-            <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-2 py-1 rounded-full border border-white/30">
-              {event.category}
+            <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-2 py-1 rounded-full border border-white/30 capitalize">
+              {item.category}
             </span>
           </div>
 
           {/* Date badge */}
           <div className="absolute top-3 right-3">
             <span className="bg-black/30 backdrop-blur-sm text-white text-xs font-medium px-2 py-1 rounded-full">
-              {event.date}
+              {formatDate(item.date)}
             </span>
           </div>
+
+          {/* Featured badge */}
+          {item.featured && (
+            <div className="absolute top-12 left-3">
+              <span className="bg-yellow-500/90 backdrop-blur-sm text-black text-xs font-bold px-2 py-1 rounded-full border border-yellow-400">
+                Featured
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Content Section */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-primary via-primary/95 to-transparent">
-          <h3 className="font-karla font-bold text-white text-sm sm:text-base mb-2 line-clamp-2">
-            {event.title}
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-blue-600 via-blue-600/95 to-transparent">
+          <h3 className="font-bold text-white text-sm sm:text-base mb-2 line-clamp-2">
+            {item.title}
           </h3>
           
-          <p className="text-white/80 text-xs mb-3 line-clamp-2 font-karla">
-            {event.description}
+          <p className="text-white/80 text-xs mb-3 line-clamp-2">
+            {item.description}
           </p>
+          
+          {/* Tags */}
+          {item.tags && item.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-2">
+              {item.tags.slice(0, 2).map((tag, idx) => (
+                <span key={idx} className="bg-white/10 text-white text-xs px-2 py-0.5 rounded-full">
+                  {tag}
+                </span>
+              ))}
+              {item.tags.length > 2 && (
+                <span className="bg-white/10 text-white text-xs px-2 py-0.5 rounded-full">
+                  +{item.tags.length - 2}
+                </span>
+              )}
+            </div>
+          )}
           
           <button 
             onClick={handleMorePicsClick}
             className="relative overflow-hidden bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full transition-all duration-300 group/btn border border-white/20 hover:border-white/40"
           >
             <span className="relative z-10 flex items-center gap-1">
-              More Pics ({event.additionalImages.length})
+              More Pics ({item.additional_images?.length || 0})
               <svg className="w-3 h-3 transition-transform duration-300 group-hover/btn:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -141,7 +188,7 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
 
       {/* Additional Images Preview */}
       <AnimatePresence>
-        {showPreview && (
+        {showPreview && item.additional_images && item.additional_images.length > 0 && (
           <motion.div
             className="absolute -right-2 top-1/2 transform -translate-y-1/2 z-20"
             initial={{ opacity: 0, x: -20, scale: 0.8 }}
@@ -152,7 +199,7 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
             <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 shadow-2xl border border-white/20 max-w-48">
               <p className="text-xs font-medium text-gray-700 mb-2">More from this event:</p>
               <div className="grid grid-cols-2 gap-2">
-                {event.additionalImages.slice(0, 4).map((img, idx) => (
+                {item.additional_images.slice(0, 4).map((img, idx) => (
                   <motion.div
                     key={idx}
                     className="relative w-20 h-16 rounded-md overflow-hidden"
@@ -162,7 +209,7 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
                   >
                     <Image
                       src={img}
-                      alt={`${event.title} ${idx + 1}`}
+                      alt={`${item.title} ${idx + 1}`}
                       fill
                       className="object-cover hover:scale-110 transition-transform duration-300"
                       sizes="80px"
@@ -170,9 +217,9 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
                   </motion.div>
                 ))}
               </div>
-              {event.additionalImages.length > 4 && (
+              {item.additional_images.length > 4 && (
                 <p className="text-xs text-gray-500 mt-2 text-center">
-                  +{event.additionalImages.length - 4} more
+                  +{item.additional_images.length - 4} more
                 </p>
               )}
             </div>
@@ -180,136 +227,141 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
         )}
       </AnimatePresence>
 
-      {/* Enhanced drop shadow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/50 rounded-xl blur-xl opacity-0 group-hover:opacity-70 transition-all duration-500 -z-10 transform translate-y-4 scale-95 group-hover:scale-100" />
+      {/* Glow Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/30 to-blue-600/50 rounded-xl blur-xl opacity-0 group-hover:opacity-70 transition-all duration-500 -z-10 transform translate-y-4 scale-95 group-hover:scale-100" />
     </motion.div>
   )
 }
 
+// Main GallerySection Component
 export default function GallerySection() {
-  const { ref, inView } = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  })
-
-  // State for storing events
-  const [recentEvents, setRecentEvents] = useState<GalleryEvent[]>([])
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 })
 
-  // Fetch events on component mount
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchGalleryItems = async () => {
       try {
         setIsLoading(true)
-        const events = await getRecentEvents(6)
-        setRecentEvents(events)
-      } catch (error) {
-        console.error('Error fetching recent events:', error)
-        setRecentEvents([]) // Fallback to empty array
+        setError(null)
+        const items = await getRecentGalleryItems(6) // Get 6 recent items
+        setGalleryItems(items)
+      } catch (err) {
+        console.error('Error fetching gallery items:', err)
+        setError('Failed to load gallery items')
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchEvents()
+    fetchGalleryItems()
   }, [])
 
+  if (isLoading) {
+    return (
+      <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="text-gray-600 mt-4">Loading gallery...</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center text-red-500">
+            <p>{error}</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
-    <section id="gallery" ref={ref} className="relative bg-gradient-to-br from-medium-gray via-medium-gray to-gray-100 py-16 sm:py-20 lg:py-24 xl:py-28 overflow-hidden">
+    <section 
+      ref={ref}
+      className="relative py-20 bg-gradient-to-br from-gray-50 via-white to-gray-100 overflow-hidden"
+    >
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary/3 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+        <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
-        {/* Section Title */}
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Section Header */}
         <motion.div
-          className="text-center mb-12 sm:mb-16 lg:mb-20"
-          variants={fadeInUp}
+          className="text-center mb-16"
+          variants={fadeInUpSection}
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
           transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
         >
           <motion.div
             className="inline-block relative"
-            variants={fadeInUp}
+            variants={fadeInUpSection}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            <h2 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-section-title text-primary relative z-10">
-              Event Gallery
+            <h2 className="font-bold text-3xl lg:text-4xl xl:text-5xl text-blue-600 relative z-10">
+              Gallery Highlights
             </h2>
             <motion.div
-              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full"
+              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent rounded-full"
               initial={{ width: 0 }}
               animate={inView ? { width: '100%' } : { width: 0 }}
               transition={{ duration: 1.2, delay: 0.8, ease: 'easeOut' }}
             />
           </motion.div>
+          
           <motion.p
-            className="text-gray-600 text-base sm:text-lg lg:text-xl mt-4 max-w-2xl mx-auto font-karla"
-            variants={fadeInUp}
+            className="text-gray-600 text-lg lg:text-xl mt-4 max-w-2xl mx-auto"
+            variants={fadeInUpSection}
             transition={{ duration: 1, delay: 0.4 }}
           >
-            Explore moments from our amazing tech events and workshops
+            Capturing memories from our most memorable events and activities
           </motion.p>
         </motion.div>
 
         {/* Gallery Grid */}
-        <motion.div
-          className="flex flex-wrap justify-center gap-6 sm:gap-8 lg:gap-10"
-          variants={staggerContainer}
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-        >
-          {isLoading ? (
-            // Loading skeleton
-            <div className="flex flex-wrap justify-center gap-6 sm:gap-8 lg:gap-10">
-              {Array.from({ length: 6 }).map((_, idx) => (
-                <div
-                  key={idx}
-                  className="w-full sm:w-72 md:w-80 h-56 sm:h-64 bg-gray-200 animate-pulse rounded-xl"
-                />
-              ))}
-            </div>
-          ) : recentEvents.length > 0 ? (
-            recentEvents.map((event) => (
-              <GalleryCard key={event.id} event={event} />
-            ))
-          ) : (
-            // No events fallback
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg font-karla">No events to display at the moment.</p>
-            </div>
-          )}
-        </motion.div>
+        {galleryItems.length > 0 ? (
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
+            variants={staggerContainer}
+            initial="hidden"
+            animate={inView ? 'visible' : 'hidden'}
+          >
+            {galleryItems.map((item) => (
+              <GalleryCardSection key={item.id} item={item} />
+            ))}
+          </motion.div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-lg">No gallery items available at the moment.</p>
+          </div>
+        )}
 
         {/* View All Button */}
         <motion.div
-          className="text-center mt-12 sm:mt-16 lg:mt-20"
-          variants={fadeInUp}
+          className="text-center"
+          variants={fadeInUpSection}
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
-          transition={{ duration: 1, delay: 1.5 }}
+          transition={{ duration: 1, delay: 0.6 }}
         >
-          <Link href="/gallery/view-all">
-            <motion.button
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-primary/90 text-white font-karla font-semibold px-8 py-4 rounded-full hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              View All Gallery
-              <svg 
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </motion.button>
+          <Link
+            href="/gallery/view-all"
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+          >
+            View All Gallery Events
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </Link>
         </motion.div>
       </div>

@@ -4,11 +4,20 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { fadeInUp } from '@/lib/public/animations'
+import { supabase } from '@/lib/supabaseClient'
+
+interface NewsletterSubscription {
+  id?: string
+  email: string
+  subscribed_at?: string
+  status?: 'active' | 'unsubscribed'
+}
 
 export default function NewsNewsletter() {
   const [email, setEmail] = useState('')
   const [isSubscribed, setIsSubscribed] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const { ref, inView } = useInView({
     triggerOnce: true,
@@ -17,21 +26,72 @@ export default function NewsNewsletter() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email) return
+    if (!email.trim()) return
 
     setIsLoading(true)
+    setError(null)
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    setIsSubscribed(true)
-    setIsLoading(false)
-    setEmail('')
+    try {
+      // Check if email already exists
+      const { data: existingSubscription, error: checkError } = await supabase
+        .from('newsletter_subscriptions')
+        .select('*')
+        .eq('email', email.trim().toLowerCase())
+        .single()
 
-    // Reset success message after 3 seconds
-    setTimeout(() => {
-      setIsSubscribed(false)
-    }, 3000)
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw checkError
+      }
+
+      if (existingSubscription) {
+        if (existingSubscription.status === 'active') {
+          setError('This email is already subscribed to our newsletter.')
+          setIsLoading(false)
+          return
+        } else {
+          // Reactivate subscription
+          const { error: updateError } = await supabase
+            .from('newsletter_subscriptions')
+            .update({ 
+              status: 'active',
+              subscribed_at: new Date().toISOString()
+            })
+            .eq('id', existingSubscription.id)
+
+          if (updateError) throw updateError
+        }
+      } else {
+        // Create new subscription
+        const { error: insertError } = await supabase
+          .from('newsletter_subscriptions')
+          .insert({
+            email: email.trim().toLowerCase(),
+            status: 'active',
+            subscribed_at: new Date().toISOString()
+          })
+
+        if (insertError) throw insertError
+      }
+
+      setIsSubscribed(true)
+      setEmail('')
+
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setIsSubscribed(false)
+      }, 5000)
+
+    } catch (err: any) {
+      console.error('Newsletter subscription error:', err)
+      setError(err.message || 'Failed to subscribe. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
   }
 
   return (
@@ -89,6 +149,16 @@ export default function NewsNewsletter() {
               Subscribe to our newsletter and never miss breaking news, exclusive interviews, and in-depth analysis
             </motion.p>
 
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-lg max-w-md mx-auto"
+              >
+                <p className="text-red-200 text-sm">{error}</p>
+              </motion.div>
+            )}
+
             <motion.form
               onSubmit={handleSubmit}
               className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
@@ -99,19 +169,22 @@ export default function NewsNewsletter() {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  if (error) setError(null)
+                }}
                 placeholder="Enter your email address"
-                className="flex-1 px-6 py-4 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all duration-300"
+                className="flex-1 px-6 py-4 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all duration-300 border-2 border-transparent focus:border-white/20"
                 required
                 disabled={isLoading}
               />
               
               <motion.button
                 type="submit"
-                disabled={isLoading || !email.trim()}
+                disabled={isLoading || !email.trim() || !isValidEmail(email.trim())}
                 className="px-8 py-4 bg-white text-primary font-semibold rounded-full hover:bg-white/90 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[140px]"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: isLoading ? 1 : 1.05 }}
+                whileTap={{ scale: isLoading ? 1 : 0.95 }}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
@@ -124,14 +197,21 @@ export default function NewsNewsletter() {
               </motion.button>
             </motion.form>
 
-            <motion.p
-              className="text-white/70 text-sm mt-4"
+            <motion.div
+              className="mt-6 space-y-2"
               initial={{ opacity: 0 }}
               animate={inView ? { opacity: 1 } : { opacity: 0 }}
               transition={{ duration: 0.6, delay: 2.6 }}
             >
-              We respect your privacy. Unsubscribe at any time.
-            </motion.p>
+              <p className="text-white/70 text-sm">
+                We respect your privacy. Unsubscribe at any time.
+              </p>
+              <div className="flex items-center justify-center gap-4 text-white/60 text-xs">
+                <span>✓ No spam</span>
+                <span>✓ Weekly digest</span>
+                <span>✓ Breaking news alerts</span>
+              </div>
+            </motion.div>
           </>
         )}
       </div>

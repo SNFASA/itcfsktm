@@ -18,9 +18,12 @@ export default function RootLayout({
   readonly children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} scroll-smooth`}><Header />{children}<Footer /></body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} scroll-smooth`}>
+        <Header />
+        {children}
+        <Footer />
+      </body>
     </html>
   )
 }
-console.log("Rendering on:", typeof window === 'undefined' ? "Server" : "Client");

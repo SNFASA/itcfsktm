@@ -5,23 +5,13 @@ import { useInView } from 'react-intersection-observer'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { useRouter, useParams } from 'next/navigation'
-import { getEventById } from '@/lib/public/galleryEvents'
+import { getGalleryItemById, type GalleryItem } from '@/lib/public/galleryEvents'
 
 interface EventImage {
   id: string
   url: string
   caption?: string
   timestamp?: string
-}
-
-interface EventDetail {
-  id: string
-  title: string
-  description: string
-  date: string
-  location: string
-  mainImage: string
-  images: EventImage[]
 }
 
 const fadeInUp = {
@@ -165,45 +155,110 @@ export default function PicEvent() {
   const router = useRouter()
   const params = useParams()
   const [selectedImage, setSelectedImage] = useState<EventImage | null>(null)
+  const [galleryItem, setGalleryItem] = useState<GalleryItem | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 })
 
-  const rawEvent = getEventById(params?.id as string)
+  useEffect(() => {
+    const fetchGalleryItem = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+        
+        const id = params?.id as string
+        if (!id) {
+          setError('No gallery item ID provided')
+          return
+        }
 
-  const eventDetail: EventDetail | null = rawEvent
-    ? {
-        id: rawEvent.id,
-        title: rawEvent.title,
-        description: rawEvent.description,
-        date: rawEvent.date,
-        location: (rawEvent as any).location || 'Unknown',
-        mainImage: rawEvent.mainImage,
-        images: 'additionalImages' in rawEvent
-          ? rawEvent.additionalImages.map((url: string, index: number) => ({
-              id: `${index + 1}`,
-              url,
-              caption: `${rawEvent.title} - Image ${index + 1}`,
-            }))
-          : [],
+        const item = await getGalleryItemById(id)
+        if (!item) {
+          setError('Gallery item not found')
+          return
+        }
+
+        setGalleryItem(item)
+      } catch (err) {
+        console.error('Error fetching gallery item:', err)
+        setError('Failed to load gallery item')
+      } finally {
+        setIsLoading(false)
       }
-    : null
+    }
 
-  if (!eventDetail) {
+    fetchGalleryItem()
+  }, [params?.id])
+
+  // Format date for display
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString)
+      return date.toLocaleDateString('en-US', { 
+        weekday: 'long',
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })
+    } catch {
+      return dateString
+    }
+  }
+
+  // Convert GalleryItem to EventImages array
+  const eventImages: EventImage[] = galleryItem 
+    ? [
+        // Include main image as first image
+        {
+          id: 'main',
+          url: galleryItem.main_image,
+          caption: `${galleryItem.title} - Main Image`,
+        },
+        // Add additional images
+        ...galleryItem.additional_images.map((url: string, index: number) => ({
+          id: `${index + 1}`,
+          url,
+          caption: `${galleryItem.title} - Image ${index + 1}`,
+        }))
+      ]
+    : []
+
+  const handleDownloadAll = () => {
+    eventImages.forEach((img, index) => {
+      setTimeout(() => {
+        const a = document.createElement('a')
+        a.href = img.url
+        a.download = `event-${galleryItem?.id}-image-${index + 1}.jpg`
+        a.click()
+      }, index * 500)
+    })
+  }
+
+  if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-600 font-semibold">
-        Event not found.
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 via-gray-100 to-gray-200">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 font-semibold">Loading gallery item...</p>
+        </div>
       </div>
     )
   }
 
-  const handleDownloadAll = () => {
-    eventDetail.images.forEach((img, index) => {
-      setTimeout(() => {
-        const a = document.createElement('a')
-        a.href = img.url
-        a.download = `event-${eventDetail.id}-image-${index + 1}.jpg`
-        a.click()
-      }, index * 500)
-    })
+  if (error || !galleryItem) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 via-gray-100 to-gray-200">
+        <div className="text-center">
+          <p className="text-gray-600 font-semibold text-lg mb-4">{error || 'Gallery item not found'}</p>
+          <button
+            onClick={() => router.back()}
+            className="text-blue-600 hover:text-blue-800 font-medium"
+          >
+            ← Back to Gallery
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -225,8 +280,8 @@ export default function PicEvent() {
         <motion.div className="mb-12 sm:mb-16" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
           <div className="relative h-64 sm:h-80 lg:h-96 rounded-2xl overflow-hidden mb-8 shadow-2xl">
             <Image
-              src={eventDetail.mainImage}
-              alt={eventDetail.title}
+              src={galleryItem.main_image}
+              alt={galleryItem.title}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 80vw"
@@ -234,22 +289,41 @@ export default function PicEvent() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 text-white">
-              <h1 className="font-bold text-2xl sm:text-3xl lg:text-4xl mb-2">{eventDetail.title}</h1>
+              <h1 className="font-bold text-2xl sm:text-3xl lg:text-4xl mb-2">{galleryItem.title}</h1>
               <div className="flex flex-wrap gap-4 text-white/90 text-sm sm:text-base">
-                <span className="flex items-center gap-2">📅 {eventDetail.date}</span>
-                <span className="flex items-center gap-2">📍 {eventDetail.location}</span>
+                <span className="flex items-center gap-2">📅 {formatDate(galleryItem.date)}</span>
+                <span className="flex items-center gap-2 capitalize">🏷️ {galleryItem.category}</span>
+                {galleryItem.featured && (
+                  <span className="flex items-center gap-2">⭐ Featured</span>
+                )}
               </div>
             </div>
           </div>
 
-          <motion.p
-            className="text-gray-600 text-base sm:text-lg lg:text-xl max-w-4xl leading-relaxed"
+          <motion.div
+            className="mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            {eventDetail.description}
-          </motion.p>
+            <p className="text-gray-600 text-base sm:text-lg lg:text-xl max-w-4xl leading-relaxed mb-4">
+              {galleryItem.description}
+            </p>
+            
+            {/* Tags */}
+            {galleryItem.tags && galleryItem.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {galleryItem.tags.map((tag: string, index: number) => (
+                  <span 
+                    key={index} 
+                    className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full font-medium"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </motion.div>
         </motion.div>
 
         <motion.div
@@ -262,26 +336,34 @@ export default function PicEvent() {
         >
           <div className="flex items-center justify-between mb-8">
             <h2 className="font-bold text-xl sm:text-2xl lg:text-3xl text-blue-600">
-              Event Photos ({eventDetail.images.length})
+              Event Photos ({eventImages.length})
             </h2>
-            <button
-              onClick={handleDownloadAll}
-              className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-300 text-sm sm:text-base font-medium"
-            >
-              ⬇️ Download All
-            </button>
+            {eventImages.length > 0 && (
+              <button
+                onClick={handleDownloadAll}
+                className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-300 text-sm sm:text-base font-medium"
+              >
+                ⬇️ Download All
+              </button>
+            )}
           </div>
 
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-            variants={staggerContainer}
-            initial="hidden"
-            animate={inView ? 'visible' : 'hidden'}
-          >
-            {eventDetail.images.map((image: EventImage) => (
-              <ImageCard key={image.id} image={image} onClick={() => setSelectedImage(image)} />
-            ))}
-          </motion.div>
+          {eventImages.length > 0 ? (
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              variants={staggerContainer}
+              initial="hidden"
+              animate={inView ? 'visible' : 'hidden'}
+            >
+              {eventImages.map((image: EventImage) => (
+                <ImageCard key={image.id} image={image} onClick={() => setSelectedImage(image)} />
+              ))}
+            </motion.div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No additional images available for this event.</p>
+            </div>
+          )}
         </motion.div>
       </div>
 

@@ -1,8 +1,10 @@
 'use client'
-import { getAllGalleryEvents } from '@/lib/public/galleryEvents'
-import type { GalleryEvent } from '@/lib/public/galleryEvents'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { getAllGalleryItems, type GalleryItem } from '@/lib/public/galleryEvents'
 
 const getSizeClasses = (size: 'small' | 'medium' | 'large') => {
   switch (size) {
@@ -17,24 +19,47 @@ const getSizeClasses = (size: 'small' | 'medium' | 'large') => {
   }
 }
 
-function GalleryCard({ event }: { event: GalleryEvent }) {
+const fadeInUp = {
+  hidden: { opacity: 0, y: 60 },
+  visible: { opacity: 1, y: 0 },
+}
+
+const staggerContainer = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+}
+
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.8, rotate: 0 },
+  visible: { opacity: 1, scale: 1 },
+}
+
+// Generate random rotation for visual variety
+const getRandomRotation = () => (Math.random() - 0.5) * 6
+
+function GalleryCard({ item }: { item: GalleryItem }) {
   const [isHovered, setIsHovered] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const [rotation] = useState(getRandomRotation())
   const router = useRouter()
 
   const handleMorePicsClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    router.push(`/gallery/event/${event.id}`)
+    router.push(`/gallery/event/${item.id}`)
   }
 
   const handleCardClick = () => {
-    router.push(`/gallery/event/${event.id}`)
+    router.push(`/gallery/event/${item.id}`)
   }
 
   return (
     <motion.div
       className="relative group cursor-pointer"
-      style={{ rotate: `${event.rotation}deg` }}
+      style={{ rotate: `${rotation}deg` }}
       variants={scaleIn}
       transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
       onHoverStart={() => {
@@ -54,12 +79,12 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
       onClick={handleCardClick}
     >
       {/* Main Card */}
-      <div className={`${getSizeClasses(event.size)} relative overflow-hidden rounded-xl shadow-xl hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-primary via-primary to-primary/90`}>
+      <div className={`${getSizeClasses(item.size)} relative overflow-hidden rounded-xl shadow-xl hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-primary via-primary to-primary/90`}>
         {/* Image Container */}
         <div className="relative h-3/4 overflow-hidden">
           <Image
-            src={event.mainImage}
-            alt={event.title}
+            src={item.main_image}
+            alt={item.title}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-110"
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
@@ -74,14 +99,14 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
           {/* Category badge */}
           <div className="absolute top-3 left-3">
             <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-2 py-1 rounded-full border border-white/30">
-              {event.category}
+              {item.category}
             </span>
           </div>
 
           {/* Date badge */}
           <div className="absolute top-3 right-3">
             <span className="bg-black/30 backdrop-blur-sm text-white text-xs font-medium px-2 py-1 rounded-full">
-              {event.date}
+              {new Date(item.date).toLocaleDateString()}
             </span>
           </div>
         </div>
@@ -89,11 +114,11 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
         {/* Content Section */}
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-primary via-primary/95 to-transparent">
           <h3 className="font-karla font-bold text-white text-sm sm:text-base mb-2 line-clamp-2">
-            {event.title}
+            {item.title}
           </h3>
           
           <p className="text-white/80 text-xs mb-3 line-clamp-2">
-            {event.description}
+            {item.description}
           </p>
           
           <button 
@@ -101,7 +126,7 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
             className="relative overflow-hidden bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full transition-all duration-300 group/btn border border-white/20 hover:border-white/40"
           >
             <span className="relative z-10 flex items-center gap-1">
-              More Pics ({event.additionalImages.length})
+              More Pics ({item.additional_images.length})
               <svg className="w-3 h-3 transition-transform duration-300 group-hover/btn:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -118,7 +143,7 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
 
       {/* Additional Images Preview */}
       <AnimatePresence>
-        {showPreview && (
+        {showPreview && item.additional_images.length > 0 && (
           <motion.div
             className="absolute -right-2 top-1/2 transform -translate-y-1/2 z-20"
             initial={{ opacity: 0, x: -20, scale: 0.8 }}
@@ -129,7 +154,7 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
             <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 shadow-2xl border border-white/20 max-w-48">
               <p className="text-xs font-medium text-gray-700 mb-2">More from this event:</p>
               <div className="grid grid-cols-2 gap-2">
-                {event.additionalImages.slice(0, 4).map((img, idx) => (
+                {item.additional_images.slice(0, 4).map((img, idx) => (
                   <motion.div
                     key={idx}
                     className="relative w-20 h-16 rounded-md overflow-hidden"
@@ -139,7 +164,7 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
                   >
                     <Image
                       src={img}
-                      alt={`${event.title} ${idx + 1}`}
+                      alt={`${item.title} ${idx + 1}`}
                       fill
                       className="object-cover hover:scale-110 transition-transform duration-300"
                       sizes="80px"
@@ -147,9 +172,9 @@ function GalleryCard({ event }: { event: GalleryEvent }) {
                   </motion.div>
                 ))}
               </div>
-              {event.additionalImages.length > 4 && (
+              {item.additional_images.length > 4 && (
                 <p className="text-xs text-gray-500 mt-2 text-center">
-                  +{event.additionalImages.length - 4} more
+                  +{item.additional_images.length - 4} more
                 </p>
               )}
             </div>
@@ -193,6 +218,8 @@ function Pagination({ currentPage, totalPages, onPageChange }: {
 
     return rangeWithDots
   }
+
+  if (totalPages <= 1) return null
 
   return (
     <div className="flex items-center justify-center space-x-2">
@@ -246,29 +273,78 @@ function Pagination({ currentPage, totalPages, onPageChange }: {
 export default function ViewAllGalleryPage() {
   const router = useRouter()
   const [currentPage, setCurrentPage] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([])
+  const [error, setError] = useState<string | null>(null)
   const itemsPerPage = 10
-  const totalPages = Math.ceil(allGalleryEvents.length / itemsPerPage)
   
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
   })
 
+  // Fetch gallery items on component mount
+  useEffect(() => {
+    const fetchGalleryItems = async () => {
+      try {
+        setIsLoading(true)
+        const items = await getAllGalleryItems()
+        setGalleryItems(items)
+      } catch (err) {
+        console.error('Error fetching gallery items:', err)
+        setError('Failed to load gallery items')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchGalleryItems()
+  }, [])
+
+  const totalPages = Math.ceil(galleryItems.length / itemsPerPage)
+
   // Get current page items
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const currentEvents = allGalleryEvents.slice(startIndex, endIndex)
+  const currentItems = galleryItems.slice(startIndex, endIndex)
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
-      setIsLoading(true)
       setCurrentPage(page)
       // Smooth scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' })
-      // Simulate loading delay for better UX
-      setTimeout(() => setIsLoading(false), 300)
     }
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-medium-gray via-medium-gray to-gray-100 flex items-center justify-center">
+        <div className="bg-white rounded-lg p-8 shadow-xl">
+          <div className="flex items-center gap-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="text-gray-600 font-medium text-lg">Loading gallery...</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-medium-gray via-medium-gray to-gray-100 flex items-center justify-center">
+        <div className="bg-white rounded-lg p-8 shadow-xl text-center">
+          <div className="text-red-500 text-lg font-medium mb-4">{error}</div>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -308,7 +384,7 @@ export default function ViewAllGalleryPage() {
             variants={fadeInUp}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            <h1 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-section-title text-primary relative z-10 mb-4">
+            <h1 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-primary relative z-10 mb-4">
               Complete Event Gallery
             </h1>
             <motion.div
@@ -323,8 +399,8 @@ export default function ViewAllGalleryPage() {
             variants={fadeInUp}
             transition={{ duration: 1, delay: 0.4 }}
           >
-            Explore our comprehensive collection of tech events, workshops, and conferences. 
-            Discover moments that shaped our community's journey in technology and innovation.
+            Explore our comprehensive collection of events, workshops, and memorable moments. 
+            Discover the vibrant community and activities that shape our journey.
           </motion.p>
           
           {/* Stats */}
@@ -334,115 +410,114 @@ export default function ViewAllGalleryPage() {
             transition={{ duration: 1, delay: 0.6 }}
           >
             <div className="text-center">
-              <div className="text-2xl sm:text-3xl font-bold text-primary">{allGalleryEvents.length}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-primary">{galleryItems.length}</div>
               <div className="text-gray-600 text-sm">Total Events</div>
             </div>
             <div className="text-center">
               <div className="text-2xl sm:text-3xl font-bold text-primary">
-                {allGalleryEvents.reduce((sum, event) => sum + event.additionalImages.length, 0)}
+                {galleryItems.reduce((sum, item) => sum + item.additional_images.length, 0)}
               </div>
               <div className="text-gray-600 text-sm">Total Photos</div>
             </div>
             <div className="text-center">
               <div className="text-2xl sm:text-3xl font-bold text-primary">
-                {new Set(allGalleryEvents.map(event => event.category)).size}
+                {new Set(galleryItems.map(item => item.category)).size}
               </div>
               <div className="text-gray-600 text-sm">Categories</div>
             </div>
           </motion.div>
         </motion.div>
 
-        {/* Loading overlay */}
-        <AnimatePresence>
-          {isLoading && (
-            <motion.div
-              className="fixed inset-0 bg-white/50 backdrop-blur-sm z-50 flex items-center justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <div className="bg-white rounded-lg p-6 shadow-xl">
-                <div className="flex items-center gap-3">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                  <span className="text-gray-600 font-medium">Loading events...</span>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Empty state */}
+        {galleryItems.length === 0 && !isLoading && (
+          <motion.div
+            className="text-center py-20"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <div className="text-gray-500 text-lg mb-4">No gallery items found</div>
+            <p className="text-gray-400">Check back later for new content!</p>
+          </motion.div>
+        )}
 
         {/* Gallery Grid */}
-        <motion.div
-          ref={ref}
-          className="flex flex-wrap justify-center gap-6 sm:gap-8 lg:gap-10 mb-12"
-          variants={staggerContainer}
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-        >
-          {currentEvents.map((event, index) => (
-            <motion.div
-              key={`${event.id}-${currentPage}`}
-              variants={scaleIn}
-              transition={{ 
-                duration: 0.6, 
-                ease: [0.25, 0.1, 0.25, 1],
-                delay: index * 0.1 
-              }}
-            >
-              <GalleryCard event={event} />
-            </motion.div>
-          ))}
-        </motion.div>
+        {galleryItems.length > 0 && (
+          <motion.div
+            ref={ref}
+            className="flex flex-wrap justify-center gap-6 sm:gap-8 lg:gap-10 mb-12"
+            variants={staggerContainer}
+            initial="hidden"
+            animate={inView ? 'visible' : 'hidden'}
+          >
+            {currentItems.map((item, index) => (
+              <motion.div
+                key={`${item.id}-${currentPage}`}
+                variants={scaleIn}
+                transition={{ 
+                  duration: 0.6, 
+                  ease: [0.25, 0.1, 0.25, 1],
+                  delay: index * 0.1 
+                }}
+              >
+                <GalleryCard item={item} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
 
         {/* Pagination */}
-        <motion.div
-          className="flex justify-center mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-        >
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-sm text-gray-600">
-                Showing <span className="font-semibold text-primary">{startIndex + 1}</span> to{' '}
-                <span className="font-semibold text-primary">{Math.min(endIndex, allGalleryEvents.length)}</span> of{' '}
-                <span className="font-semibold text-primary">{allGalleryEvents.length}</span> events
-              </p>
+        {galleryItems.length > 0 && (
+          <motion.div
+            className="flex justify-center mt-16"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          >
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-sm text-gray-600">
+                  Showing <span className="font-semibold text-primary">{startIndex + 1}</span> to{' '}
+                  <span className="font-semibold text-primary">{Math.min(endIndex, galleryItems.length)}</span> of{' '}
+                  <span className="font-semibold text-primary">{galleryItems.length}</span> events
+                </p>
+              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
             </div>
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
 
         {/* Categories Overview */}
-        <motion.div
-          className="mt-20 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-        >
-          <h3 className="font-karla font-bold text-xl sm:text-2xl text-primary mb-6">
-            Event Categories
-          </h3>
-          <div className="flex flex-wrap justify-center gap-3">
-            {Array.from(new Set(allGalleryEvents.map(event => event.category))).map((category) => {
-              const count = allGalleryEvents.filter(event => event.category === category).length
-              return (
-                <motion.span
-                  key={category}
-                  className="bg-white/60 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium border border-white/30 hover:bg-primary hover:text-white transition-all duration-300 cursor-pointer"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {category} ({count})
-                </motion.span>
-              )
-            })}
-          </div>
-        </motion.div>
+        {galleryItems.length > 0 && (
+          <motion.div
+            className="mt-20 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+          >
+            <h3 className="font-karla font-bold text-xl sm:text-2xl text-primary mb-6">
+              Event Categories
+            </h3>
+            <div className="flex flex-wrap justify-center gap-3">
+              {Array.from(new Set(galleryItems.map(item => item.category))).map((category) => {
+                const count = galleryItems.filter(item => item.category === category).length
+                return (
+                  <motion.span
+                    key={category}
+                    className="bg-white/60 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium border border-white/30 hover:bg-primary hover:text-white transition-all duration-300 cursor-pointer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {category} ({count})
+                  </motion.span>
+                )
+              })}
+            </div>
+          </motion.div>
+        )}
 
         {/* Call to Action */}
         <motion.div
@@ -456,7 +531,7 @@ export default function ViewAllGalleryPage() {
               Want to be part of our next event?
             </h3>
             <p className="text-gray-600 text-base sm:text-lg mb-8 max-w-2xl mx-auto">
-              Join our vibrant tech community and be the first to know about upcoming workshops, 
+              Join our vibrant community and be the first to know about upcoming workshops, 
               conferences, and networking opportunities.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -487,42 +562,3 @@ export default function ViewAllGalleryPage() {
     </div>
   )
 }
-'use client'
-import { useState, useEffect } from 'react'
-import { useInView } from 'react-intersection-observer'
-import { motion, AnimatePresence } from 'framer-motion'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-
-interface GalleryEvent {
-  id: string
-  title: string
-  mainImage: string
-  additionalImages: string[]
-  size: 'small' | 'medium' | 'large'
-  rotation: number
-  date: string
-  category: string
-  description: string
-}
-
-const fadeInUp = {
-  hidden: { opacity: 0, y: 60 },
-  visible: { opacity: 1, y: 0 },
-}
-
-const staggerContainer = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-}
-
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.8, rotate: 0 },
-  visible: { opacity: 1, scale: 1 },
-}
-
-// Extended mock gallery data with 25 events

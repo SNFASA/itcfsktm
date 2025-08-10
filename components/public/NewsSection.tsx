@@ -235,7 +235,7 @@ export default function NewsSection() {
                   <NewsCard
                     title={news.title}
                     description={news.description}
-                    image={news.image || 'https://api.builder.io/api/v1/image/assets/TEMP/9333e1670ce109529902d7cc1407d56e1f8f7d15?width=712'}
+                    image={news.image || '/images/default-news.jpg'}
                     date={formatNewsDate(news.published_at || news.created_at)}
                     slug={news.slug}
                     imagePosition={isEven ? 'left' : 'right'}

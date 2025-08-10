@@ -11,10 +11,10 @@ export default function Home() {
     <main className="min-h-screen">
       <HeroSection />
       <AboutSection />
-      <FacultyOrgChart />
+      <FacultyOrgChart/>
       <EventsSection />
       <NewsSection />
-      <GallerySection />
+      <GallerySection/>
     </main>
   )
 }
