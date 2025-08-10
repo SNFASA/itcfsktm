@@ -199,7 +199,7 @@ const navItems = [
           >
             {/* Instagram Icon */}
             <motion.a
-              href="#"
+              href="https://www.instagram.com/itcfsktm?igsh=MTg4ZHVkdzYyZ2FhNA=="
               className="relative group p-2 rounded-full"
               variants={iconHover}
               initial="rest"
@@ -247,7 +247,7 @@ const navItems = [
 
             {/* Facebook Icon */}
             <motion.a
-              href="#"
+              href="https://www.instagram.com/itcfsktm?igsh=MTg4ZHVkdzYyZ2FhNA=="
               className="relative group p-2 rounded-full"
               variants={iconHover}
               initial="rest"

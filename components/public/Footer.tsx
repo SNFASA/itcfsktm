@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import Image from 'next/image'
+import { useState, useEffect } from "react";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 60 },
@@ -50,6 +51,31 @@ export default function Footer() {
     threshold: 0.1,
   })
 
+  // Last Updated State
+  const [dateTime, setDateTime] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const formatted = now.toLocaleString("en-GB", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "GMT",
+        timeZoneName: "short",
+      });
+      setDateTime(formatted);
+    };
+
+    updateTime(); // initial run
+    const timer = setInterval(updateTime, 60 * 1000); // update every minute
+
+    return () => clearInterval(timer);
+  }, []);
+
   const logoData = [
     {
       src: "/images/itc-full.png",
@@ -83,7 +109,7 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="relative bg-gradient-to-br from-primary via-primary to-primary/90 py-16 sm:py-20 lg:py-24 overflow-hidden">
+    <footer className="relative bg-gradient-to-br from-blue-600 via-blue-600 to-blue-600/90 py-16 sm:py-20 lg:py-24 overflow-hidden">
       {/* Enhanced Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-10 left-10 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
@@ -124,7 +150,7 @@ export default function Footer() {
             variants={fadeInUp}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <h3 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl text-white mb-4">
+            <h3 className="font-bold text-2xl sm:text-3xl lg:text-4xl text-white mb-4">
               Our Partners
             </h3>
             <motion.div
@@ -187,7 +213,7 @@ export default function Footer() {
               transition={{ duration: 0.3 }}
             >
               <motion.p 
-                className="font-karla font-medium text-sm sm:text-base lg:text-lg text-white/90 leading-relaxed"
+                className="font-medium text-sm sm:text-base lg:text-lg text-white/90 leading-relaxed"
                 variants={fadeInUp}
                 transition={{ duration: 0.8, delay: 1 }}
               >
@@ -197,7 +223,7 @@ export default function Footer() {
                 >
                   ©
                 </motion.span>{' '}
-                Faculty of Computer Science and Information Technology (FSKTM), Universiti Tun Hussein Onn Malaysia (UTHM) ® 2025. All Rights Reserved. 
+                Information Technology Club (ITC),Faculty of Computer Science and Information Technology (FSKTM), Universiti Tun Hussein Onn Malaysia (UTHM) ® 2025. All Rights Reserved. 
                 <br className="hidden sm:block" />
                 Best viewed with any modern web browsers with resolution of 1280×1024. This website is bound by the{' '}
                 <motion.span 
@@ -219,7 +245,7 @@ export default function Footer() {
                 variants={fadeInUp}
                 transition={{ duration: 0.8, delay: 1.2 }}
               >
-                <p className="font-karla text-sm text-white/70 flex items-center gap-2">
+                <p className="text-sm text-white/70 flex items-center gap-2">
                   <motion.svg
                     className="w-4 h-4"
                     fill="none"
@@ -228,9 +254,14 @@ export default function Footer() {
                     animate={{ rotate: [0, 360] }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </motion.svg>
-                  Last updated on Tuesday 17 June 2025 15:16 GMT
+                  Last updated on {dateTime}
                 </p>
               </motion.div>
             </motion.div>
@@ -250,7 +281,7 @@ export default function Footer() {
               variants={fadeInUp}
               transition={{ duration: 0.8, delay: 1.2 }}
             >
-              <h3 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl text-white mb-2 relative">
+              <h3 className="font-bold text-2xl sm:text-3xl lg:text-4xl text-white mb-2 relative">
                 Contact Us
                 
                 {/* Animated Underline */}
@@ -262,7 +293,7 @@ export default function Footer() {
                 />
               </h3>
               <motion.p
-                className="font-karla text-white/80 text-sm sm:text-base mt-3"
+                className="text-white/80 text-sm sm:text-base mt-3"
                 variants={fadeInUp}
                 transition={{ duration: 0.8, delay: 1.4 }}
               >
@@ -279,7 +310,7 @@ export default function Footer() {
             >
               {/* Instagram Icon */}
               <motion.a
-                href="#"
+                href="https://www.instagram.com/itcfsktm?igsh=MTg4ZHVkdzYyZ2FhNA=="
                 className="relative group p-3 sm:p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300"
                 variants={iconHover}
                 initial="rest"
@@ -323,7 +354,7 @@ export default function Footer() {
 
               {/* Facebook Icon */}
               <motion.a
-                href="#"
+                href="https://www.facebook.com/groups/fsktm.uthm/?ref=share&mibextid=NSMWBT"
                 className="relative group p-3 sm:p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300"
                 variants={iconHover}
                 initial="rest"
@@ -374,7 +405,34 @@ export default function Footer() {
               transition={{ duration: 0.8, delay: 2 }}
             >
               <motion.p
-                className="font-karla text-white/70 text-sm flex items-center gap-2 justify-center lg:justify-end"
+                className="text-white/70 text-sm flex items-center gap-2 justify-center lg:justify-end"
+                whileHover={{ textShadow: "0px 0px 8px rgba(255,255,255,0.5)" }}
+              >
+                <motion.svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 0c2.5 2.5 4 6 4 10s-1.5 7.5-4 10m0-20c-2.5 2.5-4 6-4 10s1.5 7.5 4 10m-8-10h16"
+                />
+                </motion.svg>
+                fsktm.uthm.edu.my
+              </motion.p>
+              <motion.p
+                className="text-white/70 text-sm flex items-center gap-2 justify-center lg:justify-end"
                 whileHover={{ textShadow: "0px 0px 8px rgba(255,255,255,0.5)" }}
               >
                 <motion.svg
@@ -393,7 +451,7 @@ export default function Footer() {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </motion.svg>
-                itc@uthm.edu.my
+                itcfsktm@uthm.edu.my
               </motion.p>
             </motion.div>
           </motion.div>
