@@ -67,7 +67,7 @@ export default function NewsSection() {
   }, [])
 
   return (
-    <section id="news" ref={ref} className="relative bg-gradient-to-br from-primary via-primary to-primary/90 py-16 sm:py-20 lg:py-24 xl:py-28 overflow-hidden">
+    <section id="news" ref={ref} className="relative  bg-gradient-to-br from-blue-600 via-blue-600 to-blue-600/90 py-16 sm:py-20 lg:py-24 xl:py-28 overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-10 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />

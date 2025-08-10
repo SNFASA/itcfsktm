@@ -132,7 +132,7 @@ export default function FacultyOrgChart() {
   )
 
   return (
-    <section className="relative bg-gradient-to-br from-primary via-primary to-primary/90 py-16 sm:py-20 lg:py-24 xl:py-28 overflow-hidden">
+    <section className="relative  bg-gradient-to-br from-blue-600 via-blue-600 to-blue-600/90 py-16 sm:py-20 lg:py-24 xl:py-28 overflow-hidden">
       {/* Ultra-enhanced background effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Large animated background elements */}
