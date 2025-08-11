@@ -236,7 +236,7 @@ export default function Footer() {
                 >
                   Legal Disclaimer, Privacy Policy, Security Policy and Copyright Notice
                 </motion.span>{' '}
-                mentioned.
+                mentioned.This website is developed by CoremindTech.
               </motion.p>
               
               {/* Last Updated */}
