@@ -164,7 +164,7 @@ export function EventsFilter({
           >
             {eligibilityOptions.map((option) => (
               <option key={option.value || 'all'} value={option.value}>
-                {option.icon} {option.label}
+                {option.label}
               </option>
             ))}
           </select>
@@ -185,7 +185,7 @@ export function EventsFilter({
           >
             {statusOptions.map((option) => (
               <option key={option.value || 'all'} value={option.value}>
-                {option.icon} {option.label}
+                 {option.label}
               </option>
             ))}
           </select>
@@ -209,7 +209,7 @@ export function EventsFilter({
           >
             {sortOptions.map((option) => (
               <option key={option.value} value={option.value}>
-                {option.icon} {option.label}
+               {option.label}
               </option>
             ))}
           </select>

@@ -273,7 +273,7 @@ export default function GallerySection() {
 
   if (error) {
     return (
-      <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      <section id="gallery" className="py-20 bg-gradient-to-br from-gray-50 via-white to-gray-100">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-red-500">
             <p>{error}</p>
@@ -285,6 +285,7 @@ export default function GallerySection() {
 
   return (
     <section 
+       id="gallery"
       ref={ref}
       className="relative py-20 bg-gradient-to-br from-gray-50 via-white to-gray-100 overflow-hidden"
     >

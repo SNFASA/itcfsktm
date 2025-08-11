@@ -39,6 +39,7 @@ export default function EventCard({
 }: EventCardProps) {
   const [showDetails, setShowDetails] = useState(false)
   const [imageError, setImageError] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   // Default fallback image
   const defaultEventImage = '/images/default-event.jpg'
@@ -130,27 +131,39 @@ export default function EventCard({
     setImageError(true)
   }
 
+  const handleImageLoad = () => {
+    setImageLoaded(true)
+  }
+
   return (
     <div 
-      className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 ease-out transform hover:-translate-y-2 border border-gray-100 h-fit"
+      className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 ease-out transform hover:-translate-y-2 border border-gray-100 h-fit flex flex-col"
     >
       {/* Gradient Overlay for Modern Look */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10" />
       
-      {/* Image Container with Enhanced Effects */}
-      <div className="relative h-56 w-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
-        <Image
-          src={displayImage}
-          alt={`Event image for ${title}`}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          className="object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-110"
-          onError={handleImageError}
-          priority={false}
-        />
+      {/* Image Container with Flexible Height */}
+      <div className="relative w-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 flex-shrink-0">
+        <div className="relative w-full">
+          <Image
+            src={displayImage}
+            alt={`Event image for ${title}`}
+            width={400}
+            height={300}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+            className="w-full h-auto object-contain transition-all duration-700 ease-out group-hover:scale-105 group-hover:brightness-110 bg-white"
+            style={{
+              maxHeight: '400px',
+              minHeight: '200px',
+            }}
+            onError={handleImageError}
+            onLoad={handleImageLoad}
+            priority={false}
+          />
+        </div>
         
         {/* Gradient Overlay on Image */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         
         {/* Coming Soon / Status Badge */}
         {isEventComingSoon && (
@@ -169,7 +182,7 @@ export default function EventCard({
                 status === 'completed' ? 'bg-gradient-to-r from-gray-400 to-slate-500' :
                 status === 'cancelled' ? 'bg-gradient-to-r from-red-400 to-rose-500' :
                 'bg-gradient-to-r from-amber-400 to-orange-500'
-              } text-white text-xs font-bold px-3 py-2 rounded-full shadow-lg`}>
+              } text-white text-xs font-bold px-3 py-2 rounded-full shadow-lg backdrop-blur-sm`}>
                 <span className="w-2 h-2 bg-white rounded-full animate-bounce" />
                 {status === 'upcoming' ? 'Coming Soon' :
                  status === 'ongoing' ? 'Ongoing' :
@@ -193,8 +206,8 @@ export default function EventCard({
         </div>
       </div>
 
-      {/* Content Section */}
-      <div className="p-6 space-y-4">
+      {/* Content Section - Takes remaining space */}
+      <div className="p-6 space-y-4 flex-grow flex flex-col">
         {/* Header */}
         <div className="space-y-3">
           <h3 className="font-bold text-xl text-gray-900 leading-tight group-hover:text-blue-700 transition-colors duration-300 line-clamp-2">
@@ -219,12 +232,14 @@ export default function EventCard({
         </div>
 
         {/* Description */}
-        <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">
-          {description}
-        </p>
+        <div className="flex-grow">
+          <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
+            {description}
+          </p>
+        </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-3 pt-2">
+        {/* Action Buttons - Always at bottom */}
+        <div className="flex gap-3 pt-2 mt-auto">
           <button
             onClick={onRegister}
             disabled={status === 'completed' || status === 'cancelled'}
@@ -241,7 +256,7 @@ export default function EventCard({
               </svg>
               {status === 'completed' ? 'Completed' : 
                status === 'cancelled' ? 'Cancelled' :
-               registration_required ? 'Register' : 'Join Event'}
+               registration_required ? 'Register' : 'Join'}
             </span>
           </button>
           

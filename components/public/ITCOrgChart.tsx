@@ -1,7 +1,8 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import Image from 'next/image'
+import { OrgDatabase, type ExcoMember, type SectionWithMembers, type OrganizedMembers } from '@/lib/public/org'
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 60 },
@@ -54,103 +55,422 @@ export default function ITCOrgChart() {
     threshold: 0.1,
   })
 
-  // Updated data structure with proper names and positions
-  const excoMembers = [
-    { id: 'president', name: 'PRESIDENT', position: 'Yang Dipertua' },
-    { id: 'vicepresident', name: 'VICE PRESIDENT', position: 'Naib Yang Dipertua' },
-    { id: 'secretary', name: 'SECRETARY', position: 'Setiausaha' },
-    { id: 'treasurer', name: 'TREASURER', position: 'Bendahari' },
-    { id: 'committee', name: 'COMMITTEE MEMBER', position: 'Ahli Jawatankuasa' },
-  ]
+  // State for organization data
+  const [orgData, setOrgData] = useState<OrganizedMembers | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [debugMode, setDebugMode] = useState(false)
 
-  const sportsMembers = [
-    { id: 'sport1', name: 'AJK SUKAN 1', position: 'Ahli Jawatankuasa Sukan' },
-    { id: 'sport2', name: 'AJK SUKAN 2', position: 'Ahli Jawatankuasa Sukan' },
-    { id: 'sport3', name: 'AJK SUKAN 3', position: 'Ahli Jawatankuasa Sukan' },
-    { id: 'sport4', name: 'AJK SUKAN 4', position: 'Ahli Jawatankuasa Sukan' },
-  ]
+  // Fetch organization data on component mount
+  useEffect(() => {
+    const fetchOrgData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        
+        console.log('🏗️ Starting to fetch ITC organization data...')
+        
+        const data = await OrgDatabase.getITCSections()
+        console.log('✅ ITC organization data fetched:', data)
+        
+        // Sort sections: advisor sections first, then others
+        const sortedSections = [...data.sections].sort((a, b) => {
+          const aIsAdvisor = OrgDatabase.isAdvisorSection(a.section.category)
+          const bIsAdvisor = OrgDatabase.isAdvisorSection(b.section.category)
+          
+          if (aIsAdvisor && !bIsAdvisor) return -1
+          if (!aIsAdvisor && bIsAdvisor) return 1
+          return 0
+        })
+        
+        // Sort members within each section by order field
+        const sectionsWithSortedMembers = sortedSections.map(section => ({
+          ...section,
+          members: [...section.members].sort((a, b) => a.order - b.order)
+        }))
+        
+        console.log('📊 Sorted sections with ordered members:', sectionsWithSortedMembers)
+        
+        setOrgData({ sections: sectionsWithSortedMembers })
+        
+        // Get organization stats for debugging
+        if (process.env.NODE_ENV === 'development') {
+          const stats = await OrgDatabase.getOrganizationStats('itc')
+          console.log('📊 ITC organization statistics:', stats)
+        }
+        
+      } catch (err) {
+        console.error('❌ Error fetching organization data:', err)
+        setError('Failed to load organization data')
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  const mediaMembers = [
-    { id: 'media1', name: 'AJK MEDIA 1', position: 'Ahli Jawatankuasa Media' },
-    { id: 'media2', name: 'AJK MEDIA 2', position: 'Ahli Jawatankuasa Media' },
-    { id: 'media3', name: 'AJK MEDIA 3', position: 'Ahli Jawatankuasa Media' },
-    { id: 'media4', name: 'AJK MEDIA 4', position: 'Ahli Jawatankuasa Media' },
-  ]
+    fetchOrgData()
+  }, [])
 
+  
   const MemberCard = ({
     member,
     index,
     animationDelay = 0,
     variant = scaleIn,
+    isAdvisor = false,
+    isHead = false,
   }: {
-    member: { name: string; position: string },
+    member: ExcoMember,
     index: number,
     animationDelay?: number,
-    variant?: typeof scaleIn
-  }) => (
-    <motion.div
-      initial="hidden"
-      animate={inView ? 'visible' : 'hidden'}
-      variants={variant}
-      transition={{ 
-        duration: 0.8, 
-        delay: animationDelay + (index * 0.1), 
-        ease: [0.25, 0.1, 0.25, 1] 
-      }}
-      className="group relative"
-    >
+    variant?: typeof scaleIn,
+    isAdvisor?: boolean,
+    isHead?: boolean
+  }) => {
+    const [imageError, setImageError] = useState(false)
+    const [imageLoaded, setImageLoaded] = useState(false)
+    const [imageUrl, setImageUrl] = useState('')
+
+    // Initialize image URL
+    useEffect(() => {
+      const processedUrl = OrgDatabase.getMemberImageUrl(member)
+      setImageUrl(processedUrl)
+      console.log(`🖼️ MemberCard for ${member.name} using URL:`, processedUrl)
+    }, [member])
+
+    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+      console.error(`❌ Image failed to load for ${member.name}:`, {
+        src: e.currentTarget.src,
+        member: member,
+        rawImage: member.image
+      })
+      
+      if (!imageError) {
+        setImageError(true)
+        // Try default avatar if not already using it
+        const defaultAvatar = OrgDatabase.getDefaultAvatar()
+        if (e.currentTarget.src !== defaultAvatar) {
+          console.log(`🔄 Switching to default avatar for ${member.name}`)
+          setImageUrl(defaultAvatar)
+        }
+      }
+    }
+
+    const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+      console.log(`✅ Image loaded successfully for ${member.name}:`, e.currentTarget.src)
+      setImageLoaded(true)
+      setImageError(false)
+    }
+
+    // Determine sizing based on role
+    const sizing = isAdvisor 
+      ? 'w-36 h-36 sm:w-44 sm:h-44 lg:w-48 lg:h-48' 
+      : isHead
+      ? 'w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40'
+      : 'w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36'
+
+    const padding = isAdvisor 
+      ? 'p-8 sm:p-10' 
+      : isHead
+      ? 'p-6 sm:p-8'
+      : 'p-5 sm:p-6'
+
+    const textSizing = isAdvisor 
+      ? { name: 'text-lg sm:text-xl lg:text-2xl', position: 'text-base sm:text-lg' }
+      : isHead
+      ? { name: 'text-base sm:text-lg lg:text-xl', position: 'text-sm sm:text-base' }
+      : { name: 'text-sm sm:text-base lg:text-lg', position: 'text-xs sm:text-sm lg:text-base' }
+
+    return (
       <motion.div
-        className="text-center transform transition-all duration-500 group-hover:scale-105"
-        whileHover={{ y: -8 }}
-        variants={floatingAnimation}
-        animate="animate"
-        style={{ animationDelay: `${index * 0.2}s` }}
+        initial="hidden"
+        animate={inView ? 'visible' : 'hidden'}
+        variants={variant}
+        transition={{ 
+          duration: 0.8, 
+          delay: animationDelay + (index * 0.1), 
+          ease: [0.25, 0.1, 0.25, 1] 
+        }}
+        className="group relative"
       >
-        {/* Card Background with Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/60 to-white/40 backdrop-blur-sm rounded-3xl shadow-xl group-hover:shadow-2xl transition-all duration-500 transform group-hover:scale-105" />
-        
-        {/* Glowing Border Effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        
-        <div className="relative z-10 p-6 sm:p-8">
-          {/* Image Container with Enhanced Styling */}
-          <div className="relative mb-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/40 rounded-full blur-xl transform scale-110 opacity-0 group-hover:opacity-60 transition-all duration-500" />
+        <motion.div
+          className="text-center transform transition-all duration-500 group-hover:scale-105"
+          whileHover={{ y: -8 }}
+          variants={floatingAnimation}
+          animate="animate"
+          style={{ animationDelay: `${index * 0.2}s` }}
+        >
+          {/* Card Background with Gradient */}
+          <div className={`absolute inset-0 backdrop-blur-sm rounded-3xl shadow-xl group-hover:shadow-2xl transition-all duration-500 transform group-hover:scale-105 ${
+            isAdvisor 
+              ? 'bg-gradient-to-br from-white/90 via-white/70 to-white/50 scale-105' 
+              : isHead
+              ? 'bg-gradient-to-br from-white/85 via-white/65 to-white/45 scale-102'
+              : 'bg-gradient-to-br from-white/80 via-white/60 to-white/40'
+          }`} />
+          
+          {/* Glowing Border Effect */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          
+          <div className={`relative z-10 ${padding}`}>
+            {/* Image Container with Enhanced Styling */}
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/40 rounded-full blur-xl transform scale-110 opacity-0 group-hover:opacity-60 transition-all duration-500" />
+              <motion.div
+                className={`relative mx-auto flex items-center justify-center ${sizing}`}
+                whileHover={{ rotate: isAdvisor ? 2 : isHead ? 3 : 5 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="relative w-full h-full rounded-full overflow-hidden">
+                  {/* Loading placeholder */}
+                  {!imageLoaded && !imageError && (
+                    <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                  
+                  {/* Enhanced image with better error handling */}
+                  <img
+                    src={imageUrl}
+                    alt={member.name}
+                    className={`w-full h-full object-cover object-center transition-all duration-500 shadow-lg group-hover:shadow-xl ${
+                      isAdvisor 
+                        ? 'ring-6 ring-white/60' 
+                        : isHead
+                        ? 'ring-5 ring-white/55'
+                        : 'ring-4 ring-white/50 group-hover:ring-primary/30'
+                    } ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    onError={handleImageError}
+                    onLoad={handleImageLoad}
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    crossOrigin="anonymous"
+                  />
+                  
+                  {/* Debug overlay - remove in production */}
+                  {process.env.NODE_ENV === 'development' && debugMode && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-white text-xs p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {imageError ? '❌ Error' : imageLoaded ? '✅ Loaded' : '⏳ Loading'}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Special indicator for advisor */}
+                {isAdvisor && (
+                  <div className="absolute -top-3 -right-3 bg-gradient-to-br from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg transform rotate-12 group-hover:rotate-0 transition-transform duration-300">
+                    ⭐ ADVISOR
+                  </div>
+                )}
+
+                {/* Head indicator for section heads */}
+                {isHead && !isAdvisor && (
+                  <div className="absolute -top-2 -right-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg transform rotate-6 group-hover:rotate-0 transition-transform duration-300">
+                    👑 HEAD
+                  </div>
+                )}
+
+                {/* Floating Accent for regular members */}
+                {!isAdvisor && !isHead && (
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-primary to-primary/80 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 transform scale-0 group-hover:scale-100" />
+                )}
+              </motion.div>
+            </div>
+            
+            {/* Name and Position with Enhanced Typography */}
             <motion.div
-              className="relative mx-auto w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 flex items-center justify-center"
-              whileHover={{ rotate: 5 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
             >
-              <Image
-                src="/images/avata1.png"
-                alt={member.name}
-                width={160}
-                height={160}
-                className="rounded-full object-cover object-center w-full h-full ring-4 ring-white/50 group-hover:ring-primary/30 transition-all duration-500 shadow-lg group-hover:shadow-xl"
-              />
+              <h4 className={`font-karla font-bold text-primary mb-2 group-hover:text-primary/90 transition-colors duration-300 ${textSizing.name}`}>
+                {member.name}
+              </h4>
+              <p className={`font-karla font-medium text-gray-600 group-hover:text-gray-700 transition-colors duration-300 ${textSizing.position}`}>
+                {member.position}
+              </p>
               
-              {/* Floating Accent */}
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-primary to-primary/80 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 transform scale-0 group-hover:scale-100" />
+              {/* Debug info for development */}
+              {process.env.NODE_ENV === 'development' && debugMode && (
+                <div className="mt-2 text-xs text-gray-500">
+                  <p>ID: {member.id.slice(0, 8)}...</p>
+                  <p>Category: {member.category}</p>
+                  <p>Order: {member.order}</p>
+                  <p>Is Head: {member.is_head ? 'Yes' : 'No'}</p>
+                  <p>Image: {member.image ? '✅' : '❌'}</p>
+                </div>
+              )}
             </motion.div>
           </div>
-          
-          {/* Name and Position with Enhanced Typography */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <h4 className="font-karla font-bold text-sm sm:text-base lg:text-lg text-primary mb-2 group-hover:text-primary/90 transition-colors duration-300">
-              {member.name}
-            </h4>
-            <p className="font-karla font-medium text-xs sm:text-sm lg:text-base text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
-              {member.position}
-            </p>
-          </motion.div>
-        </div>
+        </motion.div>
       </motion.div>
-    </motion.div>
-  )
+    )
+  }
+
+  
+  const renderSection = (sectionData: SectionWithMembers, sectionIndex: number) => {
+    const isAdvisor = OrgDatabase.isAdvisorSection(sectionData.section.category);
+    const sectionTitle = OrgDatabase.getSectionDisplayName(sectionData.section.category);
+    const baseDelay = 0.8 + (sectionIndex * 0.8);
+
+    console.log(`🏢 Rendering section: ${sectionTitle}`, {
+      category: sectionData.section.category,
+      isAdvisor,
+      hasHead: !!sectionData.head,
+      memberCount: sectionData.members.length
+    });
+
+    // Special handling for Advisor sections (larger display)
+    if (isAdvisor && sectionData.head) {
+      return (
+        <motion.div
+          key={sectionData.section.id}
+          initial="hidden"
+          animate={inView ? 'visible' : 'hidden'}
+          variants={scaleIn}
+          transition={{ duration: 1, delay: baseDelay, ease: [0.25, 0.1, 0.25, 1] }}
+          className="flex flex-col items-center mb-16 sm:mb-20 lg:mb-24"
+        >
+          <MemberCard
+            member={sectionData.head}
+            index={0}
+            animationDelay={baseDelay}
+            variant={scaleIn}
+            isAdvisor={true}
+          />
+        </motion.div>
+      );
+    }
+
+    // Standard section rendering for all other sections (MT, RS, and others)
+    return (
+      <motion.div
+        key={sectionData.section.id}
+        initial="hidden"
+        animate={inView ? 'visible' : 'hidden'}
+        variants={fadeInUp}
+        transition={{ duration: 0.8, delay: baseDelay, ease: [0.25, 0.1, 0.25, 1] }}
+        className="mb-16 sm:mb-20 lg:mb-24"
+      >
+        {/* Section Title */}
+        <motion.h3 
+          className="font-karla font-extrabold text-xl sm:text-2xl lg:text-3xl text-primary text-center mb-12 sm:mb-16"
+          variants={fadeInUp}
+          transition={{ duration: 0.8, delay: baseDelay + 0.1 }}
+        >
+          {sectionTitle}
+          {debugMode && (
+            <span className="text-sm font-normal text-gray-500 block mt-2">
+              ({sectionData.section.category} - Head: {sectionData.head ? '✅' : '❌'} - Members: {sectionData.members.length})
+            </span>
+          )}
+        </motion.h3>
+        
+        {/* Section Head Display (if exists) */}
+        {sectionData.head && (
+          <motion.div
+            className="flex justify-center mb-12 sm:mb-16"
+            variants={scaleIn}
+            transition={{ duration: 0.8, delay: baseDelay + 0.3 }}
+          >
+            <MemberCard
+              member={sectionData.head}
+              index={0}
+              animationDelay={baseDelay + 0.3}
+              variant={scaleIn}
+              isHead={true}
+            />
+          </motion.div>
+        )}
+
+        {/* Section Members Grid (if any members exist) */}
+        {sectionData.members.length > 0 && (
+          <motion.div
+            className="flex flex-wrap justify-center gap-6 sm:gap-8"
+            variants={staggerContainer}
+          >
+            {sectionData.members.map((member, index) => (
+              <motion.div
+                key={member.id}
+                className="flex-shrink-0"
+                variants={staggerContainer}
+              >
+                <MemberCard
+                  member={member}
+                  index={index}
+                  animationDelay={baseDelay + 0.5}
+                  variant={index % 2 === 0 ? slideInLeft : slideInRight}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </motion.div>
+    );
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <section id="itc" ref={ref} className="relative bg-gradient-to-br from-medium-gray via-medium-gray to-gray-100 py-16 sm:py-20 lg:py-24 xl:py-28">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+            <p className="text-gray-600 text-lg">Loading organization chart...</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  // Error state
+  if (error || !orgData) {
+    return (
+      <section id="itc" ref={ref} className="relative bg-gradient-to-br from-medium-gray via-medium-gray to-gray-100 py-16 sm:py-20 lg:py-24 xl:py-28">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+          <div className="text-center">
+            <div className="text-red-500 text-6xl mb-4">⚠️</div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Unable to Load Organization Chart</h3>
+            <p className="text-gray-600">{error || 'Please try again later'}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  // No sections found
+  if (orgData.sections.length === 0) {
+    return (
+      <section id="itc" ref={ref} className="relative bg-gradient-to-br from-medium-gray via-medium-gray to-gray-100 py-16 sm:bp-20 lg:py-24 xl:py-28">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+          <div className="text-center">
+            <div className="text-gray-400 text-6xl mb-4">👥</div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">No Organization Data Found</h3>
+            <p className="text-gray-600 mb-6">Please add sections and members to the ITC organization in the database.</p>
+            <div className="bg-gray-50 rounded-lg p-6 text-left max-w-md mx-auto">
+              <h4 className="font-semibold mb-2">Required Steps:</h4>
+              <ol className="text-sm space-y-1 text-gray-600">
+                <li>1. Create sections with <code className="bg-gray-200 px-1 rounded">organization_type = 'itc'</code></li>
+                <li>2. Add members with categories matching your sections</li>
+                <li>3. Set proper head references or is_head flags</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  // Calculate stats
+  const totalMembers = orgData.sections.reduce((acc, section) => {
+    return acc + (section.head ? 1 : 0) + section.members.length
+  }, 0)
+
+  const totalHeads = orgData.sections.filter(section => section.head).length
 
   return (
     <section id="itc" ref={ref} className="relative bg-gradient-to-br from-medium-gray via-medium-gray to-gray-100 py-16 sm:py-20 lg:py-24 xl:py-28 overflow-hidden">
@@ -188,7 +508,32 @@ export default function ITCOrgChart() {
         />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10" ref={ref}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+        
+        {/* Debug Panel - only in development */}
+        {process.env.NODE_ENV === 'development' && debugMode && (
+          <div className="fixed top-4 right-4 bg-black/90 text-white p-4 rounded-lg text-xs max-w-sm z-50 max-h-96 overflow-y-auto">
+            <h4 className="font-bold mb-2">ITC Debug Info</h4>
+            <div className="space-y-1">
+              <p>Sections: {orgData?.sections.length || 0}</p>
+              <p>Total Members: {totalMembers}</p>
+              <p>Section Heads: {totalHeads}</p>
+              {orgData?.sections.map(section => (
+                <div key={section.section.id} className="border-t border-gray-600 pt-1 mt-1">
+                  <p className="font-semibold">{section.section.category}</p>
+                  <p className="text-gray-300">Head: {section.head ? '✅' : '❌'}</p>
+                  <p className="text-gray-300">Members: {section.members.length}</p>
+                </div>
+              ))}
+            </div>
+            <button 
+              onClick={() => setDebugMode(false)}
+              className="mt-2 px-2 py-1 bg-red-600 rounded text-xs"
+            >
+              Close
+            </button>
+          </div>
+        )}
         
         {/* Enhanced Title Section */}
         <motion.div
@@ -206,6 +551,17 @@ export default function ITCOrgChart() {
             <h2 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-section-title text-primary relative z-10">
               Organization Chart of ITC
             </h2>
+            
+            {/* Debug toggle button */}
+            {/*{process.env.NODE_ENV === 'development' && (
+              <button
+                onClick={() => setDebugMode(!debugMode)}
+                className="absolute -right-16 top-1/2 transform -translate-y-1/2 bg-primary/20 text-primary text-xs px-2 py-1 rounded hover:bg-primary/30 transition-colors"
+              >
+                Debug
+              </button>
+            )}*/}
+            
             <motion.div
               className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full"
               initial={{ width: 0 }}
@@ -222,173 +578,68 @@ export default function ITCOrgChart() {
           </motion.p>
         </motion.div>
 
-        {/* Advisor Section with Enhanced Styling */}
+        {/* Render all ITC sections dynamically */}
+        {orgData.sections.map((sectionData, sectionIndex) => 
+          renderSection(sectionData, sectionIndex)
+        )}
+
+        {/* Enhanced Statistics Section */}
         <motion.div
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
-          variants={scaleIn}
-          transition={{ duration: 1, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-          className="flex flex-col items-center mb-16 sm:mb-20 lg:mb-24"
-        >
-          <div className="relative group">
-            {/* Special Advisor Card Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-white/70 to-white/50 backdrop-blur-sm rounded-3xl shadow-2xl transform scale-105" />
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 rounded-3xl" />
-            
-            <div className="relative z-10 p-8 sm:p-10 text-center">
-              <motion.div
-                className="relative mb-8 flex justify-center"
-                whileHover={{ scale: 1.05, rotate: 2 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/50 rounded-full blur-2xl transform scale-125 opacity-30" />
-                <Image
-                  src="/images/avata1.png"
-                  alt="Advisor"
-                  width={180}
-                  height={180}
-                  className="rounded-full object-cover object-center ring-6 ring-white/60 shadow-2xl relative z-10 mx-auto"
-                />
-                
-                {/* Crown Icon for Advisor */}
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg">
-                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V11a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM15 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4z" />
-                  </svg>
-                </div>
-              </motion.div>
-              
-              <h3 className="font-karla font-bold text-lg sm:text-xl lg:text-2xl text-primary mb-2">
-                PROF. Ts. Dr. MOHD FARHAN BIN MD. FUDZEE
-              </h3>
-              <p className="font-karla font-medium text-base sm:text-lg text-gray-600">
-                Penasihat Kelab
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Executive Committee with Staggered Animation */}
-        <motion.div
           variants={staggerContainer}
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-          className="mb-16 sm:mb-20 lg:mb-24"
+          className="flex flex-wrap justify-center gap-6 mt-16 sm:mt-20"
         >
-          <motion.h3 
-            className="font-karla font-extrabold text-xl sm:text-2xl lg:text-3xl text-primary text-center mb-12 sm:mb-16"
-            variants={fadeInUp}
-            transition={{ duration: 0.8, delay: 0.8 }}
-          >
-            Executive Committee
-          </motion.h3>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 justify-items-center">
-            {excoMembers.map((member, index) => (
-              <MemberCard
-                key={member.id}
-                member={member}
-                index={index}
-                animationDelay={1.0}
-                variant={index % 2 === 0 ? slideInLeft : slideInRight}
-              />
-            ))}
-          </div>
+          {[
+            { 
+              id: 'sections-stat', 
+              number: orgData.sections.length.toString(), 
+              label: 'Sections', 
+              icon: '📁' 
+            },
+            { 
+              id: 'heads-stat', 
+              number: totalHeads.toString(), 
+              label: 'Section Heads', 
+              icon: '👨‍💼' 
+            },
+            { 
+              id: 'members-stat', 
+              number: totalMembers.toString(), 
+              label: 'Total Members', 
+              icon: '👥' 
+            },
+            { 
+              id: 'projects-stat', 
+              number: '15+', 
+              label: 'Projects', 
+              icon: '🚀' 
+            },
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.id}
+              variants={scaleIn}
+              transition={{
+                duration: 0.6,
+                delay: 2 + (index * 0.1),
+                ease: [0.25, 0.1, 0.25, 1]
+              }}
+              className="text-center group"
+            >
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-gray-200 hover:border-primary/30 transition-all duration-300 hover:bg-white group-hover:scale-105 shadow-lg hover:shadow-xl">
+                <div className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">
+                  {stat.icon}
+                </div>
+                <div className="text-2xl sm:text-3xl font-bold text-primary mb-2 group-hover:text-primary/90 transition-colors duration-300">
+                  {stat.number}
+                </div>
+                <div className="text-gray-600 text-sm font-medium group-hover:text-gray-700 transition-colors duration-300">
+                  {stat.label}
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </motion.div>
-
-        {/* Sports Section with Enhanced Layout */}
-        <motion.div
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-          variants={fadeInUp}
-          transition={{ duration: 0.8, delay: 1.5, ease: [0.25, 0.1, 0.25, 1] }}
-          className="mb-16 sm:mb-20 lg:mb-24"
-        >
-          <motion.h3 
-            className="font-karla font-extrabold text-xl sm:text-2xl lg:text-3xl text-primary text-center mb-12 sm:mb-16"
-            variants={fadeInUp}
-            transition={{ duration: 0.8, delay: 1.6 }}
-          >
-            Exco Sukan
-          </motion.h3>
-          
-          {/* Sports Head */}
-          <motion.div
-            className="flex justify-center mb-12 sm:mb-16"
-            variants={scaleIn}
-            transition={{ duration: 0.8, delay: 1.8 }}
-          >
-            <MemberCard
-              member={{ name: 'KETUA SUKAN', position: 'Ketua Bahagian Sukan' }}
-              index={0}
-              animationDelay={1.8}
-            />
-          </motion.div>
-
-          {/* Sports Members */}
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 justify-items-center"
-            variants={staggerContainer}
-          >
-            {sportsMembers.map((member, index) => (
-              <MemberCard
-                key={member.id}
-                member={member}
-                index={index}
-                animationDelay={2.0}
-                variant={slideInUp}
-              />
-            ))}
-          </motion.div>
-        </motion.div>
-
-        {/* Media Section with Enhanced Layout */}
-        <motion.div
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-          variants={fadeInUp}
-          transition={{ duration: 0.8, delay: 2.5, ease: [0.25, 0.1, 0.25, 1] }}
-        >
-          <motion.h3 
-            className="font-karla font-extrabold text-xl sm:text-2xl lg:text-3xl text-primary text-center mb-12 sm:mb-16"
-            variants={fadeInUp}
-            transition={{ duration: 0.8, delay: 2.6 }}
-          >
-            Exco Media
-          </motion.h3>
-          
-          {/* Media Head */}
-          <motion.div
-            className="flex justify-center mb-12 sm:mb-16"
-            variants={scaleIn}
-            transition={{ duration: 0.8, delay: 2.8 }}
-          >
-            <MemberCard
-              member={{ name: 'KETUA MEDIA', position: 'Ketua Bahagian Media' }}
-              index={0}
-              animationDelay={2.8}
-            />
-          </motion.div>
-
-          {/* Media Members */}
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 justify-items-center"
-            variants={staggerContainer}
-          >
-            {mediaMembers.map((member, index) => (
-              <MemberCard
-                key={member.id}
-                member={member}
-                index={index}
-                animationDelay={3.0}
-                variant={slideInUp}
-              />
-            ))}
-          </motion.div>
-        </motion.div>
-
-        {/* Call to Action */}
-
       </div>
     </section>
   )

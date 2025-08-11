@@ -298,7 +298,7 @@ export default function EventDetailPage() {
             <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">{error}</h3>
             <div className="space-x-4">
               <button 
-                onClick={() => router.push('/events')}
+                onClick={() => router.push('/#events')}
                 className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
               >
                 Back to Events
@@ -326,7 +326,7 @@ export default function EventDetailPage() {
     <main className="container mx-auto px-4 py-8">
       {/* Back Button */}
       <motion.button
-        onClick={() => router.push('/events')}
+        onClick={() => router.push('/#events')}
         className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors mb-6"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
