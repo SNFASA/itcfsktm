@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Your existing config
-  experimental: {
-    appDir: true,
-  },
   // Add images configuration
   images: {
     remotePatterns: [
