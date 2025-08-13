@@ -266,7 +266,7 @@ export default function PicEvent() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10 py-8 sm:py-12 lg:py-16">
         <motion.button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors duration-300 mb-8 group"
+          className="flex items-center gap-2 text-blue-600 hover:text-blue-600 transition-colors duration-300 mb-8 group"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}

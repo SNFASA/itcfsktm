@@ -68,7 +68,7 @@ export function EventsFilter({
   isLoading = false,
   resultsCount = 0,
 }: Readonly<EventsFilterProps>) {
-  const hasActiveFilters = searchTerm || selectedEligibility || selectedStatus || showOnlineOnly || showFreeOnly || showWithCertificates
+  const hasActiveFilters = searchTerm || selectedEligibility || selectedStatus || showOnlineOnly || showFreeOnly || showWithCertificates || sortBy !== 'date-asc'
 
   const activeFiltersCount = [
     searchTerm,
@@ -76,8 +76,42 @@ export function EventsFilter({
     selectedStatus,
     showOnlineOnly,
     showFreeOnly,
-    showWithCertificates
+    showWithCertificates,
+    sortBy !== 'date-asc' ? sortBy : null
   ].filter(Boolean).length
+
+  // Handle input changes with proper event handling
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onSearchChange(e.target.value)
+  }
+
+  const handleEligibilityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onEligibilityChange(e.target.value)
+  }
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onStatusChange(e.target.value)
+  }
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onSortChange(e.target.value)
+  }
+
+  const handleOnlineToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onOnlineToggle(e.target.checked)
+  }
+
+  const handleFreeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onFreeToggle(e.target.checked)
+  }
+
+  const handleCertificateToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onCertificateToggle(e.target.checked)
+  }
+
+  const clearSearchTerm = () => {
+    onSearchChange('')
+  }
 
   return (
     <motion.div 
@@ -91,7 +125,7 @@ export function EventsFilter({
         <div className="flex items-center gap-3">
           <h3 className="text-lg font-bold text-gray-800">Filter & Search Events</h3>
           {activeFiltersCount > 0 && (
-            <span className="inline-flex items-center px-2 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
+            <span className="inline-flex items-center px-2 py-1 bg-blue-600/10 text-blue-600 text-xs font-semibold rounded-full">
               {activeFiltersCount} active
             </span>
           )}
@@ -131,15 +165,17 @@ export function EventsFilter({
               type="text"
               placeholder="Search by title, description, or location..."
               value={searchTerm}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pl-12 pr-10 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white/80 backdrop-blur-sm"
+              onChange={handleSearchChange}
+              className="w-full pl-12 pr-10 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all duration-300 bg-white/80 backdrop-blur-sm"
               disabled={isLoading}
             />
             {searchTerm && (
               <button
-                onClick={() => onSearchChange('')}
+                onClick={clearSearchTerm}
+                type="button"
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                 disabled={isLoading}
+                aria-label="Clear search"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -152,14 +188,14 @@ export function EventsFilter({
         {/* Eligibility Filter */}
         <div>
           <label htmlFor="events-eligibility-select" className="block text-sm font-semibold text-gray-700 mb-2">
-            👥 Eligibility
+            Eligibility
           </label>
           <select
             id="events-eligibility-select"
             aria-label="Filter by eligibility"
             value={selectedEligibility}
-            onChange={(e) => onEligibilityChange(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white/80 backdrop-blur-sm"
+            onChange={handleEligibilityChange}
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all duration-300 bg-white/80 backdrop-blur-sm"
             disabled={isLoading}
           >
             {eligibilityOptions.map((option) => (
@@ -173,14 +209,14 @@ export function EventsFilter({
         {/* Status Filter */}
         <div>
           <label htmlFor="events-status-select" className="block text-sm font-semibold text-gray-700 mb-2">
-            Status
+             Status
           </label>
           <select
             id="events-status-select"
             aria-label="Filter by status"
             value={selectedStatus}
-            onChange={(e) => onStatusChange(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white/80 backdrop-blur-sm"
+            onChange={handleStatusChange}
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all duration-300 bg-white/80 backdrop-blur-sm"
             disabled={isLoading}
           >
             {statusOptions.map((option) => (
@@ -203,8 +239,8 @@ export function EventsFilter({
             id="events-sort-select"
             aria-label="Sort events"
             value={sortBy}
-            onChange={(e) => onSortChange(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white/80 backdrop-blur-sm"
+            onChange={handleSortChange}
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all duration-300 bg-white/80 backdrop-blur-sm"
             disabled={isLoading}
           >
             {sortOptions.map((option) => (
@@ -218,7 +254,7 @@ export function EventsFilter({
         {/* Toggle Filters */}
         <div className="lg:col-span-2 flex flex-col gap-3">
           <label className="block text-sm font-semibold text-gray-700 mb-1">
-             Quick Filters
+              Quick Filters
           </label>
           <div className="flex flex-wrap gap-3">
             {/* Online Only */}
@@ -226,7 +262,7 @@ export function EventsFilter({
               <input
                 type="checkbox"
                 checked={showOnlineOnly}
-                onChange={(e) => onOnlineToggle(e.target.checked)}
+                onChange={handleOnlineToggle}
                 className="sr-only"
                 disabled={isLoading}
               />
@@ -237,8 +273,8 @@ export function EventsFilter({
                   showOnlineOnly ? 'translate-x-6' : 'translate-x-0'
                 }`} />
               </div>
-              <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-primary transition-colors">
-                 Online Only
+              <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors">
+                  Online Only
               </span>
             </label>
 
@@ -247,7 +283,7 @@ export function EventsFilter({
               <input
                 type="checkbox"
                 checked={showFreeOnly}
-                onChange={(e) => onFreeToggle(e.target.checked)}
+                onChange={handleFreeToggle}
                 className="sr-only"
                 disabled={isLoading}
               />
@@ -258,8 +294,8 @@ export function EventsFilter({
                   showFreeOnly ? 'translate-x-6' : 'translate-x-0'
                 }`} />
               </div>
-              <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-primary transition-colors">
-                 Free Only
+              <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors">
+                  Free Only
               </span>
             </label>
 
@@ -268,7 +304,7 @@ export function EventsFilter({
               <input
                 type="checkbox"
                 checked={showWithCertificates}
-                onChange={(e) => onCertificateToggle(e.target.checked)}
+                onChange={handleCertificateToggle}
                 className="sr-only"
                 disabled={isLoading}
               />
@@ -279,8 +315,8 @@ export function EventsFilter({
                   showWithCertificates ? 'translate-x-6' : 'translate-x-0'
                 }`} />
               </div>
-              <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-primary transition-colors">
-                 With Certificates
+              <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors">
+                  With Certificates
               </span>
             </label>
           </div>
@@ -290,10 +326,11 @@ export function EventsFilter({
         <div className="flex items-end">
           <button
             onClick={onClearFilters}
+            type="button"
             disabled={!hasActiveFilters || isLoading}
             className={`w-full px-6 py-3 font-semibold rounded-xl transition-all duration-300 border-2 ${
               hasActiveFilters && !isLoading
-                ? 'text-primary border-primary hover:bg-primary hover:text-white transform hover:scale-105 shadow-md hover:shadow-lg'
+                ? 'text-blue-600 border-blue-600 hover:bg-blue-600 hover:text-white transform hover:scale-105 shadow-md hover:shadow-lg'
                 : 'text-gray-400 border-gray-300 cursor-not-allowed'
             }`}
           >
@@ -333,8 +370,10 @@ export function EventsFilter({
                  Search: "{searchTerm}"
                 <button
                   onClick={() => onSearchChange('')}
+                  type="button"
                   className="ml-1 text-blue-600 hover:text-blue-800 font-bold"
                   disabled={isLoading}
+                  aria-label="Remove search filter"
                 >
                   ×
                 </button>
@@ -351,8 +390,10 @@ export function EventsFilter({
                 {eligibilityOptions.find(opt => opt.value === selectedEligibility)?.label}
                 <button
                   onClick={() => onEligibilityChange('')}
+                  type="button"
                   className="ml-1 text-green-600 hover:text-green-800 font-bold"
                   disabled={isLoading}
+                  aria-label="Remove eligibility filter"
                 >
                   ×
                 </button>
@@ -369,8 +410,10 @@ export function EventsFilter({
                 {statusOptions.find(opt => opt.value === selectedStatus)?.label}
                 <button
                   onClick={() => onStatusChange('')}
+                  type="button"
                   className="ml-1 text-purple-600 hover:text-purple-800 font-bold"
                   disabled={isLoading}
+                  aria-label="Remove status filter"
                 >
                   ×
                 </button>
@@ -387,8 +430,10 @@ export function EventsFilter({
                 Online Only
                 <button
                   onClick={() => onOnlineToggle(false)}
+                  type="button"
                   className="ml-1 text-indigo-600 hover:text-indigo-800 font-bold"
                   disabled={isLoading}
+                  aria-label="Remove online only filter"
                 >
                   ×
                 </button>
@@ -405,8 +450,10 @@ export function EventsFilter({
                 Free Only
                 <button
                   onClick={() => onFreeToggle(false)}
+                  type="button"
                   className="ml-1 text-emerald-600 hover:text-emerald-800 font-bold"
                   disabled={isLoading}
+                  aria-label="Remove free only filter"
                 >
                   ×
                 </button>
@@ -423,8 +470,30 @@ export function EventsFilter({
                 With Certificates
                 <button
                   onClick={() => onCertificateToggle(false)}
+                  type="button"
                   className="ml-1 text-amber-600 hover:text-amber-800 font-bold"
                   disabled={isLoading}
+                  aria-label="Remove certificate filter"
+                >
+                  ×
+                </button>
+              </motion.span>
+            )}
+
+            {sortBy !== 'date-asc' && (
+              <motion.span 
+                className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded-full border border-orange-200"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                Sort: {sortOptions.find(opt => opt.value === sortBy)?.label}
+                <button
+                  onClick={() => onSortChange('date-asc')}
+                  type="button"
+                  className="ml-1 text-orange-600 hover:text-orange-800 font-bold"
+                  disabled={isLoading}
+                  aria-label="Reset sort to default"
                 >
                   ×
                 </button>

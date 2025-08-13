@@ -90,11 +90,19 @@ export default function NewsPage() {
 
   if (loading) {
     return (
-      <main className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-gray-600 font-karla">Loading news articles...</p>
+      <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+        </div>
+        {/* Main content container */}
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-gray-600 font-karla">Loading news articles...</p>
+            </div>
           </div>
         </div>
       </main>
@@ -103,20 +111,28 @@ export default function NewsPage() {
 
   if (error) {
     return (
-      <main className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <svg className="w-16 h-16 text-red-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
-            <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">Error Loading News</h3>
-            <p className="text-gray-500 mb-4">{error}</p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Try Again
-            </button>
+      <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+        </div>
+        {/* Main content container */}
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <svg className="w-16 h-16 text-red-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">Error Loading News</h3>
+              <p className="text-gray-500 mb-4">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
           </div>
         </div>
       </main>
@@ -124,79 +140,90 @@ export default function NewsPage() {
   }
 
   return (
-    <main className="container mx-auto px-4 py-12">
-      <motion.div
-        ref={ref}
-        initial="hidden"
-        animate="visible"
-        variants={fadeInUp}
-        transition={{ duration: 0.8 }}
-        className="text-center mb-12"
-      >
-        <motion.div
-          className="inline-block relative"
-          variants={fadeInUp}
-          transition={{ duration: 1, delay: 0.2 }}
-        >
-          <h1 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-primary relative z-10">
-            All News & Updates
-          </h1>
-          <motion.div
-            className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full"
-            initial={{ width: 0 }}
-            animate={inView ? { width: '100%' } : { width: 0 }}
-            transition={{ duration: 1.2, delay: 0.8, ease: 'easeOut' }}
-          />
-        </motion.div>
-        <motion.p
-          className="text-gray-600 text-base sm:text-lg lg:text-xl mt-4 max-w-2xl mx-auto font-karla"
-          variants={fadeInUp}
-          transition={{ duration: 1, delay: 0.4 }}
-        >
-          Stay informed with the latest news, announcements, and updates from our community.
-        </motion.p>
-      </motion.div>
+    <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+      </div>
       
-      <NewsFilters
-        searchTerm={searchTerm}
-        selectedCategory={selectedCategory}
-        sortBy={sortBy}
-        categories={categories}
-        onSearchChange={setSearchTerm}
-        onCategoryChange={setSelectedCategory}
-        onSortChange={setSortBy}
-        onClearFilters={handleClearFilters}
-      />
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredNews.length > 0 ? (
-          filteredNews.map((news, index) => (
+      {/* Main content container */}
+      <div className="container mx-auto px-4">
+        <motion.div
+          ref={ref}
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12 relative z-10"
+        >
+          <motion.div
+            className="inline-block relative"
+            variants={fadeInUp}
+            transition={{ duration: 1, delay: 0.2 }}
+          >
+            <h1 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-blue-600 relative z-10">
+              All News & Updates
+            </h1>
             <motion.div
-              key={news.id}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-            >
-              <NewsListCard news={news} />
-            </motion.div>
-          ))
-        ) : (
-          <div className="col-span-full text-center py-16">
-            <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">No articles found</h3>
-            <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
-            {(searchTerm || selectedCategory !== 'All') && (
-              <button
-                onClick={handleClearFilters}
-                className="mt-4 px-4 py-2 text-primary hover:text-primary/80 transition-colors"
+              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent rounded-full"
+              initial={{ width: 0 }}
+              animate={inView ? { width: '100%' } : { width: 0 }}
+              transition={{ duration: 1.2, delay: 0.8, ease: 'easeOut' }}
+            />
+          </motion.div>
+          <motion.p
+            className="text-gray-600 text-base sm:text-lg lg:text-xl mt-4 max-w-2xl mx-auto font-karla"
+            variants={fadeInUp}
+            transition={{ duration: 1, delay: 0.4 }}
+          >
+            Stay informed with the latest news, announcements, and updates from our community.
+          </motion.p>
+        </motion.div>
+        
+        <div className="relative z-10">
+          <NewsFilters
+            searchTerm={searchTerm}
+            selectedCategory={selectedCategory}
+            sortBy={sortBy}
+            categories={categories}
+            onSearchChange={setSearchTerm}
+            onCategoryChange={setSelectedCategory}
+            onSortChange={setSortBy}
+            onClearFilters={handleClearFilters}
+          />
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
+          {filteredNews.length > 0 ? (
+            filteredNews.map((news, index) => (
+              <motion.div
+                key={news.id}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
               >
-                Clear all filters
-              </button>
-            )}
-          </div>
-        )}
+                <NewsListCard news={news} />
+              </motion.div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-16">
+              <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">No articles found</h3>
+              <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
+              {(searchTerm || selectedCategory !== 'All') && (
+                <button
+                  onClick={handleClearFilters}
+                  className="mt-4 px-4 py-2 text-blue-600 hover:text-blue-600/80 transition-colors"
+                >
+                  Clear all filters
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </main>
   )

@@ -246,7 +246,7 @@ export default function EventCard({
             className={`flex-1 relative ${
               status === 'completed' || status === 'cancelled' 
                 ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transform hover:scale-105'
+                : 'bg-blue-600 hover:from-blue-700 hover:to-purple-700 transform hover:scale-105'
             } text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl group/btn overflow-hidden`}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />

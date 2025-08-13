@@ -43,7 +43,7 @@ export default function NewsArticle({ news, onBack }: NewsArticleProps) {
       {/* Back Button */}
       <motion.button
         onClick={onBack}
-        className="mb-8 flex items-center gap-2 text-primary font-karla font-semibold hover:gap-3 transition-all duration-300 group"
+        className="mb-8 flex items-center gap-2 text-blue-600 font-karla font-semibold hover:gap-3 transition-all duration-300 group"
         whileHover={{ x: -5 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -125,7 +125,7 @@ export default function NewsArticle({ news, onBack }: NewsArticleProps) {
             src={news.image || '/images/default-news.jpg'}
             alt={news.title}
             fill
-            className="object-cover"
+            className="object-contain"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
         </motion.div>

@@ -281,7 +281,7 @@ export default function ITCOrgChart() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <h4 className={`font-karla font-bold text-primary mb-2 group-hover:text-primary/90 transition-colors duration-300 ${textSizing.name}`}>
+              <h4 className={`font-karla font-bold text-blue-600 mb-2 group-hover:text-blue-700 transition-colors duration-300 ${textSizing.name}`}>
                 {member.name}
               </h4>
               <p className={`font-karla font-medium text-gray-600 group-hover:text-gray-700 transition-colors duration-300 ${textSizing.position}`}>
@@ -352,7 +352,7 @@ export default function ITCOrgChart() {
       >
         {/* Section Title */}
         <motion.h3 
-          className="font-karla font-extrabold text-xl sm:text-2xl lg:text-3xl text-primary text-center mb-12 sm:mb-16"
+          className="font-karla font-extrabold text-xl sm:text-2xl lg:text-3xl text-blue-600 text-center mb-12 sm:mb-16"
           variants={fadeInUp}
           transition={{ duration: 0.8, delay: baseDelay + 0.1 }}
         >
@@ -473,13 +473,14 @@ export default function ITCOrgChart() {
   const totalHeads = orgData.sections.filter(section => section.head).length
 
   return (
-    <section id="itc" ref={ref} className="relative bg-gradient-to-br from-medium-gray via-medium-gray to-gray-100 py-16 sm:py-20 lg:py-24 xl:py-28 overflow-hidden">
+    <section id="itc" 
+      ref={ref} 
+      className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden"
+      >
       {/* Enhanced Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 left-10 w-64 h-64 bg-primary/8 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-        <div className="absolute top-1/3 right-1/3 w-48 h-48 bg-primary/3 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
         
         {/* Floating Elements */}
         <motion.div
@@ -548,7 +549,7 @@ export default function ITCOrgChart() {
             variants={fadeInUp}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            <h2 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-section-title text-primary relative z-10">
+            <h2 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-section-title text-blue-600 relative z-10">
               Organization Chart of ITC
             </h2>
             
@@ -563,7 +564,7 @@ export default function ITCOrgChart() {
             )}*/}
             
             <motion.div
-              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full"
+              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent rounded-full"
               initial={{ width: 0 }}
               animate={inView ? { width: '100%' } : { width: 0 }}
               transition={{ duration: 1.2, delay: 0.8, ease: 'easeOut' }}
@@ -630,7 +631,7 @@ export default function ITCOrgChart() {
                 <div className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">
                   {stat.icon}
                 </div>
-                <div className="text-2xl sm:text-3xl font-bold text-primary mb-2 group-hover:text-primary/90 transition-colors duration-300">
+                <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-2 group-hover:text-blue-700 transition-colors duration-300">
                   {stat.number}
                 </div>
                 <div className="text-gray-600 text-sm font-medium group-hover:text-gray-700 transition-colors duration-300">

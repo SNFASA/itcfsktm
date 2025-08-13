@@ -276,11 +276,20 @@ export default function EventDetailPage() {
 
   if (loading) {
     return (
-      <main className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-gray-600 font-karla">Loading event details...</p>
+      <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+        </div>
+        
+        {/* Main content container */}
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-gray-600 font-karla">Loading event details...</p>
+            </div>
           </div>
         </div>
       </main>
@@ -289,26 +298,35 @@ export default function EventDetailPage() {
 
   if (error) {
     return (
-      <main className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <svg className="w-16 h-16 text-red-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
-            <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">{error}</h3>
-            <div className="space-x-4">
-              <button 
-                onClick={() => router.push('/#events')}
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                Back to Events
-              </button>
-              <button 
-                onClick={() => window.location.reload()} 
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Try Again
-              </button>
+      <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+        </div>
+        
+        {/* Main content container */}
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <svg className="w-16 h-16 text-red-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">{error}</h3>
+              <div className="space-x-4">
+                <button 
+                  onClick={() => router.push('/#events')}
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  Back to Events
+                </button>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Try Again
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -323,20 +341,28 @@ export default function EventDetailPage() {
   const StatusIcon = statusConfig.icon
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      {/* Back Button */}
-      <motion.button
-        onClick={() => router.push('/#events')}
-        className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors mb-6"
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <ArrowLeft className="w-5 h-5" />
-        <span className="font-karla font-medium">Back to Events</span>
-      </motion.button>
+    <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+      </div>
+      
+      {/* Main content container */}
+      <div className="container mx-auto px-4">
+        {/* Back Button */}
+        <motion.button
+          onClick={() => router.push('/#events')}
+          className="flex items-center space-x-2 text-blue-600 hover:text-blue-600/90 transition-colors mb-6"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-karla font-medium">Back to Events</span>
+        </motion.button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         {/* Image Slideshow */}
         <motion.div
           ref={ref}
@@ -346,13 +372,13 @@ export default function EventDetailPage() {
           transition={{ duration: 0.8 }}
           className="relative"
         >
-          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
+          <div className="relative rounded-2xl overflow-hidden bg-gray-100">
             <img
               src={allImages[currentImageIndex] || defaultEventImage}
               alt={event.title}
-              className="w-full h-full object-cover transition-opacity duration-1000"
+              className="w-full h-auto object-contain transition-opacity duration-1000"
             />
-            
+                            
             {/* Navigation Arrows */}
             {allImages.length > 1 && (
               <>
@@ -372,7 +398,7 @@ export default function EventDetailPage() {
                 </button>
               </>
             )}
-
+            
             {/* Dots Navigation */}
             {allImages.length > 1 && (
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
@@ -388,7 +414,7 @@ export default function EventDetailPage() {
                 ))}
               </div>
             )}
-
+            
             {/* Status Badge */}
             <div className={`absolute top-4 left-4 px-3 py-1 rounded-full border font-medium text-sm flex items-center space-x-2 ${statusConfig.className}`}>
               <StatusIcon className="w-4 h-4" />
@@ -397,193 +423,194 @@ export default function EventDetailPage() {
           </div>
         </motion.div>
 
-        {/* Event Information */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-          className="space-y-6"
-        >
-          {/* Title and Share */}
-          <motion.div variants={slideInVariants} className="flex justify-between items-start">
-            <h1 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl text-gray-900">
-              {event.title}
-            </h1>
-            <div className="relative">
-              <button
-                onClick={() => setShowShareMenu(!showShareMenu)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                aria-label="Share event"
-              >
-                <Share2 className="w-5 h-5 text-gray-600" />
-              </button>
-              
-              {/* Share Menu */}
-              {showShareMenu && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 p-2 z-10"
-                >
-                  <button
-                    onClick={shareOnFacebook}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-md text-sm"
-                  >
-                    Share on Facebook
-                  </button>
-                  <button
-                    onClick={shareOnTwitter}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-md text-sm"
-                  >
-                    Share on Twitter
-                  </button>
-                  <button
-                    onClick={shareOnLinkedIn}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-md text-sm"
-                  >
-                    Share on LinkedIn
-                  </button>
-                  <button
-                    onClick={shareOnWhatsApp}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-md text-sm"
-                  >
-                    Share on WhatsApp
-                  </button>
-                </motion.div>
-              )}
-            </div>
-          </motion.div>
-
-          {/* Description */}
-          <motion.p 
-            variants={slideInVariants}
-            className="text-gray-700 text-lg leading-relaxed font-karla"
+          {/* Event Information */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+            className="space-y-6"
           >
-            {event.description}
-          </motion.p>
-
-          {/* Key Information */}
-          <motion.div variants={slideInVariants} className="space-y-4">
-            <div className="flex items-center space-x-3 text-gray-700">
-              <Calendar className="w-5 h-5 text-primary" />
-              <span className="font-medium">{formatDate(event.date)}</span>
-            </div>
-            
-            <div className="flex items-center space-x-3 text-gray-700">
-              <Clock className="w-5 h-5 text-primary" />
-              <span className="font-medium">{event.time}</span>
-            </div>
-            
-            <div className="flex items-center space-x-3 text-gray-700">
-              <MapPin className="w-5 h-5 text-primary" />
-              <span className="font-medium">{event.location}</span>
-            </div>
-            
-            <div className="flex items-center space-x-3 text-gray-700">
-              <Users className="w-5 h-5 text-primary" />
-              <span className="font-medium">Open to {formatEligibility(event.eligibility)}</span>
-            </div>
-          </motion.div>
-
-          {/* Event Details */}
-          {event.details && (
-            <motion.div variants={slideInVariants} className="bg-gray-50 rounded-xl p-6">
-              <h3 className="font-karla font-bold text-lg text-gray-900 mb-4">Event Features</h3>
-              <div className="grid grid-cols-2 gap-4">
-                {event.details.isFree && (
-                  <div className="flex items-center space-x-2 text-green-700">
-                    <Gift className="w-5 h-5" />
-                    <span className="text-sm font-medium">Free Event</span>
-                  </div>
-                )}
+            {/* Title and Share */}
+            <motion.div variants={slideInVariants} className="flex justify-between items-start">
+              <h1 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl text-gray-900">
+                {event.title}
+              </h1>
+              <div className="relative">
+                <button
+                  onClick={() => setShowShareMenu(!showShareMenu)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  aria-label="Share event"
+                >
+                  <Share2 className="w-5 h-5 text-gray-600" />
+                </button>
                 
-                {event.details.hasCertificate && (
-                  <div className="flex items-center space-x-2 text-blue-700">
-                    <Award className="w-5 h-5" />
-                    <span className="text-sm font-medium">Certificate Provided</span>
-                  </div>
-                )}
-                
-                {event.details.hasRefreshments && (
-                  <div className="flex items-center space-x-2 text-orange-700">
-                    <Coffee className="w-5 h-5" />
-                    <span className="text-sm font-medium">Refreshments</span>
-                  </div>
-                )}
-                
-                {event.details.hasTransportation && (
-                  <div className="flex items-center space-x-2 text-purple-700">
-                    <Car className="w-5 h-5" />
-                    <span className="text-sm font-medium">Transportation</span>
-                  </div>
-                )}
-                
-                {event.details.isOnline && (
-                  <div className="flex items-center space-x-2 text-indigo-700">
-                    <Globe className="w-5 h-5" />
-                    <span className="text-sm font-medium">Online Event</span>
-                  </div>
-                )}
-                
-                {event.details.isLimited && (
-                  <div className="flex items-center space-x-2 text-red-700">
-                    <UserCheck className="w-5 h-5" />
-                    <span className="text-sm font-medium">Limited Seats</span>
-                  </div>
+                {/* Share Menu */}
+                {showShareMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 p-2 z-10"
+                  >
+                    <button
+                      onClick={shareOnFacebook}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-md text-sm"
+                    >
+                      Share on Facebook
+                    </button>
+                    <button
+                      onClick={shareOnTwitter}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-md text-sm"
+                    >
+                      Share on Twitter
+                    </button>
+                    <button
+                      onClick={shareOnLinkedIn}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-md text-sm"
+                    >
+                      Share on LinkedIn
+                    </button>
+                    <button
+                      onClick={shareOnWhatsApp}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-md text-sm"
+                    >
+                      Share on WhatsApp
+                    </button>
+                  </motion.div>
                 )}
               </div>
+            </motion.div>
+
+            {/* Description */}
+            <motion.p 
+              variants={slideInVariants}
+              className="text-gray-700 text-lg leading-relaxed font-karla"
+            >
+              {event.description}
+            </motion.p>
+
+            {/* Key Information */}
+            <motion.div variants={slideInVariants} className="space-y-4">
+              <div className="flex items-center space-x-3 text-gray-700">
+                <Calendar className="w-5 h-5 text-blue-600" />
+                <span className="font-medium">{formatDate(event.date)}</span>
+              </div>
               
-              {event.details.agenda && (
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <div className="flex items-start space-x-2 text-gray-700">
-                    <FileText className="w-5 h-5 text-primary mt-0.5" />
-                    <div>
-                      <span className="font-medium block">Agenda:</span>
-                      <p className="text-sm mt-1">{event.details.agenda}</p>
+              <div className="flex items-center space-x-3 text-gray-700">
+                <Clock className="w-5 h-5 text-blue-600" />
+                <span className="font-medium">{event.time}</span>
+              </div>
+              
+              <div className="flex items-center space-x-3 text-gray-700">
+                <MapPin className="w-5 h-5 text-blue-600" />
+                <span className="font-medium">{event.location}</span>
+              </div>
+              
+              <div className="flex items-center space-x-3 text-gray-700">
+                <Users className="w-5 h-5 text-blue-600" />
+                <span className="font-medium">Open to {formatEligibility(event.eligibility)}</span>
+              </div>
+            </motion.div>
+
+            {/* Event Details */}
+            {event.details && (
+              <motion.div variants={slideInVariants} className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="font-karla font-bold text-lg text-gray-900 mb-4">Event Features</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {event.details.isFree && (
+                    <div className="flex items-center space-x-2 text-green-700">
+                      <Gift className="w-5 h-5" />
+                      <span className="text-sm font-medium">Free Event</span>
+                    </div>
+                  )}
+                  
+                  {event.details.hasCertificate && (
+                    <div className="flex items-center space-x-2 text-blue-700">
+                      <Award className="w-5 h-5" />
+                      <span className="text-sm font-medium">Certificate Provided</span>
+                    </div>
+                  )}
+                  
+                  {event.details.hasRefreshments && (
+                    <div className="flex items-center space-x-2 text-orange-700">
+                      <Coffee className="w-5 h-5" />
+                      <span className="text-sm font-medium">Refreshments</span>
+                    </div>
+                  )}
+                  
+                  {event.details.hasTransportation && (
+                    <div className="flex items-center space-x-2 text-purple-700">
+                      <Car className="w-5 h-5" />
+                      <span className="text-sm font-medium">Transportation</span>
+                    </div>
+                  )}
+                  
+                  {event.details.isOnline && (
+                    <div className="flex items-center space-x-2 text-indigo-700">
+                      <Globe className="w-5 h-5" />
+                      <span className="text-sm font-medium">Online Event</span>
+                    </div>
+                  )}
+                  
+                  {event.details.isLimited && (
+                    <div className="flex items-center space-x-2 text-red-700">
+                      <UserCheck className="w-5 h-5" />
+                      <span className="text-sm font-medium">Limited Seats</span>
+                    </div>
+                  )}
+                </div>
+                
+                {event.details.agenda && (
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div className="flex items-start space-x-2 text-gray-700">
+                      <FileText className="w-5 h-5 text-blue-600 mt-0.5" />
+                      <div>
+                        <span className="font-medium block">Agenda:</span>
+                        <p className="text-sm mt-1">{event.details.agenda}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </motion.div>
-          )}
+                )}
+              </motion.div>
+            )}
 
-          {/* Registration Button - Only for upcoming events */}
-          {event.status === 'upcoming' && event.registration_link && (
-            <motion.button
-              variants={slideInVariants}
-              onClick={handleRegister}
-              className="w-full bg-primary text-white py-4 px-6 rounded-xl font-bold text-lg hover:bg-primary/90 transition-all duration-300 flex items-center justify-center space-x-2 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <span>Register Now</span>
-              <ExternalLink className="w-5 h-5" />
-            </motion.button>
-          )}
+            {/* Registration Button - Only for upcoming events */}
+            {event.status === 'upcoming' && event.registration_link && (
+              <motion.button
+                variants={slideInVariants}
+                onClick={handleRegister}
+                className="w-full bg-primary text-white py-4 px-6 rounded-xl font-bold text-lg hover:bg-primary/90 transition-all duration-300 flex items-center justify-center space-x-2 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <span>Register Now</span>
+                <ExternalLink className="w-5 h-5" />
+              </motion.button>
+            )}
 
-          {/* Registration Required Message */}
-          {event.registration_required && !event.registration_link && (
-            <motion.div
-              variants={slideInVariants}
-              className="bg-yellow-50 border border-yellow-200 rounded-xl p-4"
-            >
-              <p className="text-yellow-800 font-medium">Registration required for this event. Please contact the organizers for more information.</p>
-            </motion.div>
-          )}
-        </motion.div>
+            {/* Registration Required Message */}
+            {event.registration_required && !event.registration_link && (
+              <motion.div
+                variants={slideInVariants}
+                className="bg-yellow-50/80 backdrop-blur-sm border border-yellow-200 rounded-xl p-4"
+              >
+                <p className="text-yellow-800 font-medium">Registration required for this event. Please contact the organizers for more information.</p>
+              </motion.div>
+            )}
+          </motion.div>
+        </div>
+
+        {/* Click outside to close share menu */}
+        {showShareMenu && (
+          <button
+            className="fixed inset-0 z-5 cursor-default"
+            onClick={() => setShowShareMenu(false)}
+            aria-label="Close share menu"
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setShowShareMenu(false)
+              }
+            }}
+          />
+        )}
       </div>
-
-      {/* Click outside to close share menu */}
-      {showShareMenu && (
-        <button
-          className="fixed inset-0 z-5 cursor-default"
-          onClick={() => setShowShareMenu(false)}
-          aria-label="Close share menu"
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') {
-              setShowShareMenu(false)
-            }
-          }}
-        />
-      )}
     </main>
   )
 }

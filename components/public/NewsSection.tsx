@@ -358,7 +358,7 @@ export default function NewsSection() {
         >
           <motion.a
             href="/news"
-            className="inline-flex items-center gap-3 bg-gradient-to-r from-white to-white/90 text-primary font-karla font-semibold px-8 py-4 rounded-full hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-white to-white/90 text-blue-600 font-karla font-semibold px-8 py-4 rounded-full hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

@@ -60,11 +60,19 @@ export default function NewsDetailPage({ params }: NewsDetailPageProps) {
   // Loading state
   if (loading) {
     return (
-      <main className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-gray-600 font-karla">Loading article...</p>
+      <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+        </div>
+        {/* Main content container */}
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-gray-600 font-karla">Loading article...</p>
+            </div>
           </div>
         </div>
       </main>
@@ -74,24 +82,62 @@ export default function NewsDetailPage({ params }: NewsDetailPageProps) {
   // Error state
   if (error) {
     return (
-      <main className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <svg className="w-16 h-16 text-red-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
-            <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">Error Loading Article</h3>
-            <p className="text-gray-500 mb-4">{error}</p>
-            <div className="flex gap-4 justify-center">
-              <button 
-                onClick={() => window.location.reload()} 
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                Try Again
-              </button>
+      <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+        </div>
+        {/* Main content container */}
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <svg className="w-16 h-16 text-red-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">Error Loading Article</h3>
+              <p className="text-gray-500 mb-4">{error}</p>
+              <div className="flex gap-4 justify-center">
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  Try Again
+                </button>
+                <button 
+                  onClick={() => router.push('/news')} 
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Back to News
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    )
+  }
+  
+  if (!article) {
+    return (
+      <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+        </div>
+        {/* Main content container */}
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">Article Not Found</h3>
+              <p className="text-gray-500 mb-4">The requested article could not be found.</p>
               <button 
                 onClick={() => router.push('/news')} 
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-600/90 transition-colors"
               >
                 Back to News
               </button>
@@ -101,34 +147,21 @@ export default function NewsDetailPage({ params }: NewsDetailPageProps) {
       </main>
     )
   }
-  if (!article) {
-    return (
-      <main className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">Article Not Found</h3>
-            <p className="text-gray-500 mb-4">The requested article could not be found.</p>
-            <button 
-              onClick={() => router.push('/news')} 
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Back to News
-            </button>
-          </div>
-        </div>
-      </main>
-    )
-  }
 
   return (
-    <main className="container mx-auto px-4 py-12">
-      <NewsArticle
-        news={article}
-        onBack={handleBack}
-      />
+    <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+      </div>
+      {/* Main content container */}
+      <div className="container mx-auto px-4 relative z-10">
+        <NewsArticle
+          news={article}
+          onBack={handleBack}
+        />
+      </div>
     </main>
   )
 }

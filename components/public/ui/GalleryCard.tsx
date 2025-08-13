@@ -99,8 +99,8 @@ export function GalleryCard({ item, onClick }: GalleryCardProps) {
       onClick={handleCardClick}
     >
       {/* Main Card */}
-      <div className={`${getSizeClasses(item.size)} relative overflow-hidden rounded-xl shadow-xl hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-primary via-primary to-primary/90`}>
-        {/* Image */}
+      <div className={`${getSizeClasses(item.size)} relative overflow-hidden rounded-xl shadow-xl hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-blue-600 via-blue-600 to-blue-600/90`}>
+        {/* Image Container */}
         <div className="relative h-3/4 overflow-hidden">
           <Image
             src={item.main_image}
@@ -109,7 +109,11 @@ export function GalleryCard({ item, onClick }: GalleryCardProps) {
             className="object-cover transition-transform duration-700 group-hover:scale-110"
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
           />
+          
+          {/* Image overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+          
+          {/* Shine effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
           
           {/* Category badge */}
@@ -118,7 +122,7 @@ export function GalleryCard({ item, onClick }: GalleryCardProps) {
               {item.category}
             </span>
           </div>
-          
+
           {/* Date badge */}
           <div className="absolute top-3 right-3">
             <span className="bg-black/30 backdrop-blur-sm text-white text-xs font-medium px-2 py-1 rounded-full">
@@ -136,20 +140,21 @@ export function GalleryCard({ item, onClick }: GalleryCardProps) {
           )}
         </div>
 
-        {/* Content */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-primary via-primary/95 to-transparent">
-          <h3 className="font-karla font-bold text-white text-sm sm:text-base mb-2 line-clamp-2">
+        {/* Content Section */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-blue-600 via-blue-600/95 to-transparent">
+          <h3 className="font-bold text-white text-sm sm:text-base mb-2 line-clamp-2">
             {item.title}
           </h3>
-          <p className="text-white/80 text-xs mb-3 line-clamp-2 font-karla">
+          
+          <p className="text-white/80 text-xs mb-3 line-clamp-2">
             {item.description}
           </p>
           
           {/* Tags */}
           {item.tags && item.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mb-2">
-              {item.tags.slice(0, 2).map((tag: string, idx: number) => (
-                <span key={`tag-${item.id}-${idx}`} className="bg-white/10 text-white text-xs px-2 py-0.5 rounded-full">
+              {item.tags.slice(0, 2).map((tag, idx) => (
+                <span key={idx} className="bg-white/10 text-white text-xs px-2 py-0.5 rounded-full">
                   {tag}
                 </span>
               ))}
@@ -161,7 +166,7 @@ export function GalleryCard({ item, onClick }: GalleryCardProps) {
             </div>
           )}
           
-          <button
+          <button 
             onClick={handleMorePicsClick}
             className="relative overflow-hidden bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full transition-all duration-300 group/btn border border-white/20 hover:border-white/40"
           >
@@ -176,7 +181,7 @@ export function GalleryCard({ item, onClick }: GalleryCardProps) {
         </div>
 
         {/* Border glow effect */}
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/20 via-transparent to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none border border-transparent">
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/20 via-transparent to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ padding: '1px' }}>
           <div className="w-full h-full rounded-xl bg-transparent" />
         </div>
       </div>
@@ -223,7 +228,7 @@ export function GalleryCard({ item, onClick }: GalleryCardProps) {
       </AnimatePresence>
 
       {/* Glow Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/50 rounded-xl blur-xl opacity-0 group-hover:opacity-70 transition-all duration-500 -z-10 transform translate-y-4 scale-95 group-hover:scale-100" />
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/30 to-blue-600/50 rounded-xl blur-xl opacity-0 group-hover:opacity-70 transition-all duration-500 -z-10 transform translate-y-4 scale-95 group-hover:scale-100" />
     </motion.div>
   )
 }

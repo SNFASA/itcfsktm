@@ -37,7 +37,7 @@ export default function NewsFilters({
               placeholder="Search news..."
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300"
+              className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all duration-300"
             />
           </div>
         </div>
@@ -52,7 +52,7 @@ export default function NewsFilters({
             aria-label="Filter by category"
             value={selectedCategory}
             onChange={(e) => onCategoryChange(e.target.value)}
-            className="w-full lg:w-auto px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white"
+            className="w-full lg:w-auto px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all duration-300 bg-white"
           >
             {categories.map(category => (
               <option key={category} value={category}>
@@ -72,7 +72,7 @@ export default function NewsFilters({
             aria-label="Sort news"
             value={sortBy}
             onChange={(e) => onSortChange(e.target.value)}
-            className="w-full lg:w-auto px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white"
+            className="w-full lg:w-auto px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600y/20 focus:border-blue-600 transition-all duration-300 bg-white"
           >
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
@@ -82,7 +82,7 @@ export default function NewsFilters({
         {/* Clear Filters */}
         <button
           onClick={onClearFilters}
-          className="w-full lg:w-auto px-6 py-3 text-primary font-semibold hover:bg-primary hover:text-white transition-all duration-300 rounded-xl border border-primary"
+          className="w-full lg:w-auto px-6 py-3 text-vlue-600 font-semibold hover:bg-blue-600 hover:text-white transition-all duration-300 rounded-xl border border-blue-600"
         >
           Clear Filters
         </button>

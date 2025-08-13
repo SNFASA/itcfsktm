@@ -35,7 +35,7 @@ export default function NewsListCard({ news, onClick }: NewsListCardProps) {
                 src={news.image}
                 alt={news.title}
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
               />
             ) : (
               <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -83,7 +83,7 @@ export default function NewsListCard({ news, onClick }: NewsListCardProps) {
               </div>
             </div>
             
-            <h3 className="font-karla font-bold text-xl text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300 line-clamp-2">
+            <h3 className="font-karla font-bold text-xl text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2">
               {news.title}
             </h3>
             
@@ -96,7 +96,7 @@ export default function NewsListCard({ news, onClick }: NewsListCardProps) {
                 By {news.author}
               </div>
               
-              <div className="flex items-center gap-2 text-primary font-karla font-semibold group-hover:gap-3 transition-all duration-300">
+              <div className="flex items-center gap-2 text-blue-600 font-karla font-semibold group-hover:gap-3 transition-all duration-300">
                 <span>Read More</span>
                 <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
