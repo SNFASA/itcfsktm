@@ -210,16 +210,16 @@ export default function AboutSection() {
               transition={{ duration: 0.8, delay: 0.5 }}
             >
               {/* Title Background Decoration */}
-              <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-primary via-primary/80 to-primary/40 rounded-full" />
+              <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-blue-600 via-blue/80 to-blue/40 rounded-full" />
               
               <motion.div className="relative">
-                <h2 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-section-title text-primary relative z-10">
+                <h2 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-section-title text-blue-600 relative z-10">
                   About Us
                 </h2>
                 
                 {/* Animated Underline */}
                 <motion.div
-                  className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-primary via-primary/80 to-transparent rounded-full"
+                  className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-blue-600 via-blue-600 to-transparent rounded-full"
                   initial={{ width: 0 }}
                   animate={inView ? { width: '60%' } : { width: 0 }}
                   transition={{ duration: 1.2, delay: 1, ease: 'easeOut' }}
@@ -266,7 +266,7 @@ export default function AboutSection() {
                     <span className="relative z-10">
                       The Information Technology Club (ITC) at Universiti Tun Hussein Onn Malaysia (UTHM) is a{' '}
                       <motion.span
-                        className="text-primary font-semibold relative"
+                        className="text-blue-600 font-semibold relative"
                         whileHover={{ scale: 1.05 }}
                         transition={{ duration: 0.2 }}
                       >
@@ -288,7 +288,7 @@ export default function AboutSection() {
                   >
                     ITC provides students with hands-on opportunities to develop technical and soft skills through activities such as{' '}
                     <motion.span
-                      className="text-primary font-semibold"
+                      className="text-blue-600 font-semibold"
                       whileHover={{ scale: 1.05 }}
                     >
                       workshops, coding competitions, hackathons, leadership programs, and community outreach
@@ -302,7 +302,7 @@ export default function AboutSection() {
                   >
                     Open to all FSKTM students and the wider public, ITC bridges academic learning with real-world experiences, fostering{' '}
                     <motion.span
-                      className="text-primary font-semibold relative"
+                      className="text-blue-600 font-semibold relative"
                       whileHover={{ scale: 1.05 }}
                     >
                       collaboration, innovation, and professional growth
@@ -325,7 +325,7 @@ export default function AboutSection() {
                 >
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
                     {[
-                      { number: '500+', label: 'Active Members' },
+                      { number: '100+', label: 'Active Members' },
                       { number: '50+', label: 'Events Organized' },
                       { number: '10+', label: 'Years of Excellence' },
                     ].map((stat, index) => (
@@ -337,7 +337,7 @@ export default function AboutSection() {
                         whileHover={{ scale: 1.05 }}
                       >
                         <motion.div
-                          className="text-lg sm:text-xl lg:text-2xl font-bold text-primary group-hover:text-primary/80 transition-colors"
+                          className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600 group-hover:text-primary/80 transition-colors"
                           initial={{ scale: 0 }}
                           animate={inView ? { scale: 1 } : { scale: 0 }}
                           transition={{ duration: 0.5, delay: 2 + (index * 0.1), type: "spring" }}
@@ -362,7 +362,7 @@ export default function AboutSection() {
             >
               <motion.a
                 href="/about/itcOrg"
-                className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-primary/90 text-white font-karla font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full hover:shadow-xl transition-all duration-300 transform hover:scale-105 group text-sm sm:text-base"
+                className="inline-flex items-center gap-3 gap-2 bg-blue-600 hover:bg-blue-700 text-white font-karla font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full hover:shadow-xl transition-all duration-300 transform hover:scale-105 group text-sm sm:text-base"
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >

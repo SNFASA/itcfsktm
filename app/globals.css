@@ -51,7 +51,7 @@ a {
 }
 
 .about-decorative-bg {
-  background: #5409DA;
+  background: blue;
 }
 
 .about-decorative-white {
@@ -65,7 +65,7 @@ a {
   width: 100%;
   height: 100%;
   opacity: 1;
-  background: url('/images/itc-half.png') #5409DA 50% / contain no-repeat;
+  background: url('/images/itc-half.png') blue 50% / contain no-repeat;
   
 }
 .clip-curve {

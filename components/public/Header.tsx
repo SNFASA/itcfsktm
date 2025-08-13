@@ -162,7 +162,7 @@ const navItems = [
               >
                 <motion.a
                   href={item.href}
-                  className="font-karla font-bold text-lg xl:text-xl text-gray-800 hover:text-primary transition-all duration-300 relative z-10 py-2 px-3 rounded-lg"
+                  className="font-karla font-bold text-lg xl:text-xl text-gray-800 hover:text-blue-600 transition-all duration-300 relative z-10 py-2 px-3 rounded-lg"
                   whileHover={{ 
                     y: -2,
                     textShadow: "0px 2px 4px rgba(59, 130, 246, 0.3)"
