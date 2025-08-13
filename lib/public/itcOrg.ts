@@ -8,107 +8,7 @@ import {
   CreateExcoMember,
   CreateExcoSection,
   OrganizationType 
-}
-
-// Additional utility functions
-
-// Function to get all ITC members only
-export async function fetchItcMembers(): Promise<ExcoMemberDB[]> {
-  try {
-    const { data: members, error } = await supabase
-      .from('excomember')
-      .select('*')
-      .order('category', { ascending: true })
-      .order('order', { ascending: true })
-
-    if (error) {
-      throw new Error(`Error fetching members: ${error.message}`)
-    }
-
-    return (members as ExcoMemberDB[]) || []
-  } catch (error) {
-    console.error('Error fetching ITC members:', error)
-    return []
-  }
-}
-
-// Function to get members by category
-export async function fetchMembersByCategory(category: string): Promise<ExcoMemberDB[]> {
-  try {
-    const { data: members, error } = await supabase
-      .from('excomember')
-      .select('*')
-      .eq('category', category)
-      .order('order', { ascending: true })
-
-    if (error) {
-      throw new Error(`Error fetching members for category ${category}: ${error.message}`)
-    }
-
-    return (members as ExcoMemberDB[]) || []
-  } catch (error) {
-    console.error(`Error fetching members for category ${category}:`, error)
-    return []
-  }
-}
-
-// Function to get section heads only
-export async function fetchSectionHeads(): Promise<ExcoMemberDB[]> {
-  try {
-    const { data: members, error } = await supabase
-      .from('excomember')
-      .select('*')
-      .eq('is_head', true)
-      .order('category', { ascending: true })
-
-    if (error) {
-      throw new Error(`Error fetching section heads: ${error.message}`)
-    }
-
-    return (members as ExcoMemberDB[]) || []
-  } catch (error) {
-    console.error('Error fetching section heads:', error)
-    return []
-  }
-}
-
-// Function to delete member
-export async function deleteExcoMember(memberId: string): Promise<boolean> {
-  try {
-    const { error } = await supabase
-      .from('excomember')
-      .delete()
-      .eq('id', memberId)
-
-    if (error) {
-      throw new Error(`Error deleting member: ${error.message}`)
-    }
-
-    return true
-  } catch (error) {
-    console.error('Error deleting member:', error)
-    return false
-  }
-}
-
-// Function to delete section
-export async function deleteExcoSection(sectionId: string): Promise<boolean> {
-  try {
-    const { error } = await supabase
-      .from('excosection')
-      .delete()
-      .eq('id', sectionId)
-
-    if (error) {
-      throw new Error(`Error deleting section: ${error.message}`)
-    }
-
-    return true
-  } catch (error) {
-    console.error('Error deleting section:', error)
-    return false
-  }
-} from '@lib/public/types'
+} from '@/lib/public/types'
 import { createClient } from '@supabase/supabase-js'
 
 // Initialize Supabase client
@@ -283,6 +183,106 @@ export async function upsertExcoSection(section: CreateExcoSection) {
   } catch (error) {
     console.error('Error upserting section:', error)
     throw error
+  }
+}
+
+// Additional utility functions
+
+// Function to get all ITC members only
+export async function fetchItcMembers(): Promise<ExcoMemberDB[]> {
+  try {
+    const { data: members, error } = await supabase
+      .from('excomember')
+      .select('*')
+      .order('category', { ascending: true })
+      .order('order', { ascending: true })
+
+    if (error) {
+      throw new Error(`Error fetching members: ${error.message}`)
+    }
+
+    return (members as ExcoMemberDB[]) || []
+  } catch (error) {
+    console.error('Error fetching ITC members:', error)
+    return []
+  }
+}
+
+// Function to get members by category
+export async function fetchMembersByCategory(category: string): Promise<ExcoMemberDB[]> {
+  try {
+    const { data: members, error } = await supabase
+      .from('excomember')
+      .select('*')
+      .eq('category', category)
+      .order('order', { ascending: true })
+
+    if (error) {
+      throw new Error(`Error fetching members for category ${category}: ${error.message}`)
+    }
+
+    return (members as ExcoMemberDB[]) || []
+  } catch (error) {
+    console.error(`Error fetching members for category ${category}:`, error)
+    return []
+  }
+}
+
+// Function to get section heads only
+export async function fetchSectionHeads(): Promise<ExcoMemberDB[]> {
+  try {
+    const { data: members, error } = await supabase
+      .from('excomember')
+      .select('*')
+      .eq('is_head', true)
+      .order('category', { ascending: true })
+
+    if (error) {
+      throw new Error(`Error fetching section heads: ${error.message}`)
+    }
+
+    return (members as ExcoMemberDB[]) || []
+  } catch (error) {
+    console.error('Error fetching section heads:', error)
+    return []
+  }
+}
+
+// Function to delete member
+export async function deleteExcoMember(memberId: string): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('excomember')
+      .delete()
+      .eq('id', memberId)
+
+    if (error) {
+      throw new Error(`Error deleting member: ${error.message}`)
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error deleting member:', error)
+    return false
+  }
+}
+
+// Function to delete section
+export async function deleteExcoSection(sectionId: string): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('excosection')
+      .delete()
+      .eq('id', sectionId)
+
+    if (error) {
+      throw new Error(`Error deleting section: ${error.message}`)
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error deleting section:', error)
+    return false
   }
 }
 
