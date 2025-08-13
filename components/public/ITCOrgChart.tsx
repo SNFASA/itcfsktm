@@ -44,10 +44,13 @@ const floatingAnimation = {
     transition: {
       duration: 3,
       repeat: Infinity,
-      ease: "easeInOut"
+      ease: "easeInOut" as const
     }
   }
 }
+
+// Define a union type for animation variants
+type AnimationVariant = typeof fadeInUp | typeof slideInLeft | typeof slideInRight | typeof scaleIn | typeof slideInUp;
 
 export default function ITCOrgChart() {
   const { ref, inView } = useInView({
@@ -122,7 +125,7 @@ export default function ITCOrgChart() {
     member: ExcoMember,
     index: number,
     animationDelay?: number,
-    variant?: typeof scaleIn,
+    variant?: AnimationVariant,
     isAdvisor?: boolean,
     isHead?: boolean
   }) => {

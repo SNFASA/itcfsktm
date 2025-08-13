@@ -2,6 +2,9 @@
 import { supabase } from "@/lib/supabaseClient"
 import type { GalleryItem, GalleryCategory, GalleryFilterOptions, PaginatedGalleryResult } from "@/lib/public/gallery"
 
+// Export the GalleryItem type so it can be used in other files
+export type { GalleryItem, GalleryCategory, GalleryFilterOptions, PaginatedGalleryResult }
+
 // Enhanced error handling wrapper
 const withErrorHandling = async <T>(
   operation: () => Promise<T>,

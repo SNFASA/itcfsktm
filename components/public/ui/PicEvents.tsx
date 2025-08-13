@@ -14,6 +14,18 @@ interface EventImage {
   timestamp?: string
 }
 
+// Fixed: Made props readonly
+interface LightboxModalProps {
+  readonly image: EventImage | null
+  readonly onClose: () => void
+}
+
+// Fixed: Made props readonly
+interface ImageCardProps {
+  readonly image: EventImage
+  readonly onClick: () => void
+}
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 60 },
   visible: { opacity: 1, y: 0 },
@@ -33,7 +45,7 @@ const scaleIn = {
   visible: { opacity: 1, scale: 1 },
 }
 
-function LightboxModal({ image, onClose }: { image: EventImage | null; onClose: () => void }) {
+function LightboxModal({ image, onClose }: LightboxModalProps) {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -121,7 +133,7 @@ function LightboxModal({ image, onClose }: { image: EventImage | null; onClose: 
   )
 }
 
-function ImageCard({ image, onClick }: { image: EventImage; onClick: () => void }) {
+function ImageCard({ image, onClick }: ImageCardProps) {
   const [isLoading, setIsLoading] = useState(true)
 
   return (
@@ -214,9 +226,9 @@ export default function PicEvent() {
           url: galleryItem.main_image,
           caption: `${galleryItem.title} - Main Image`,
         },
-        // Add additional images
+        // Add additional images - Fixed: Use URL as unique key instead of index
         ...galleryItem.additional_images.map((url: string, index: number) => ({
-          id: `${index + 1}`,
+          id: `${galleryItem.id}-${url.split('/').pop() || index}`, // Use filename or fallback to index
           url,
           caption: `${galleryItem.title} - Image ${index + 1}`,
         }))
@@ -310,12 +322,12 @@ export default function PicEvent() {
               {galleryItem.description}
             </p>
             
-            {/* Tags */}
+            {/* Tags - Fixed: Use tag content as key instead of index */}
             {galleryItem.tags && galleryItem.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {galleryItem.tags.map((tag: string, index: number) => (
+                {galleryItem.tags.map((tag: string) => (
                   <span 
-                    key={index} 
+                    key={tag} 
                     className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full font-medium"
                   >
                     {tag}
@@ -355,6 +367,7 @@ export default function PicEvent() {
               initial="hidden"
               animate={inView ? 'visible' : 'hidden'}
             >
+              {/* Fixed: Use image.id as key instead of index */}
               {eventImages.map((image: EventImage) => (
                 <ImageCard key={image.id} image={image} onClick={() => setSelectedImage(image)} />
               ))}

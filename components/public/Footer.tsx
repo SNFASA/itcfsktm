@@ -33,18 +33,6 @@ const staggerContainer = {
   },
 }
 
-const iconHover = {
-  rest: { scale: 1, rotate: 0 },
-  hover: { 
-    scale: 1.2, 
-    rotate: 10,
-    transition: {
-      duration: 0.3,
-      ease: "easeOut"
-    }
-  }
-}
-
 export default function Footer() {
   const { ref, inView } = useInView({
     triggerOnce: true,
@@ -312,9 +300,15 @@ export default function Footer() {
               <motion.a
                 href="https://www.instagram.com/itcfsktm?igsh=MTg4ZHVkdzYyZ2FhNA=="
                 className="relative group p-3 sm:p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300"
-                variants={iconHover}
-                initial="rest"
-                whileHover="hover"
+                initial={{ scale: 1, rotate: 0 }}
+                whileHover={{ 
+                  scale: 1.2, 
+                  rotate: 10,
+                  transition: {
+                    duration: 0.3,
+                    ease: "easeOut"
+                  }
+                }}
                 whileTap={{ scale: 0.9 }}
                 transition={{ duration: 0.6, delay: 1.6 }}
               >
@@ -356,9 +350,15 @@ export default function Footer() {
               <motion.a
                 href="https://www.facebook.com/groups/fsktm.uthm/?ref=share&mibextid=NSMWBT"
                 className="relative group p-3 sm:p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300"
-                variants={iconHover}
-                initial="rest"
-                whileHover="hover"
+                initial={{ scale: 1, rotate: 0 }}
+                whileHover={{ 
+                  scale: 1.2, 
+                  rotate: 10,
+                  transition: {
+                    duration: 0.3,
+                    ease: "easeOut"
+                  }
+                }}
                 whileTap={{ scale: 0.9 }}
                 transition={{ duration: 0.6, delay: 1.8 }}
               >
