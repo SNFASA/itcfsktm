@@ -14,7 +14,7 @@ export default function Button({
   size = 'medium',
   className = '',
   onClick 
-}: ButtonProps) {
+}: Readonly<ButtonProps>) {
   const baseClasses = 'inline-flex items-center justify-center gap-2 rounded-lg font-inter font-normal transition-colors'
   
   const variantClasses = {

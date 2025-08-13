@@ -66,6 +66,7 @@ export function GalleryFilter({
               <button
                 onClick={() => onSearchChange('')}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                title="Clear search"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -117,10 +118,11 @@ export function GalleryFilter({
 
         {/* Clear Filters */}
         <div className="w-full lg:w-auto">
-          <label className="block text-sm font-medium text-transparent mb-2 select-none">
+          <label htmlFor="gallery-clear-filters" className="block text-sm font-medium text-transparent mb-2 select-none">
             Actions
           </label>
           <button
+            id="gallery-clear-filters"
             onClick={onClearFilters}
             className="w-full lg:w-auto px-6 py-3 text-blue-600 font-semibold hover:bg-blue-600 hover:text-white transition-all duration-300 rounded-xl border border-blue-600"
           >

@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getAllNews, getCategoryDisplayName } from '@/lib/public/newsUtils'
+import { getAllNews } from '@/lib/public/newsUtils'
 import { useInView } from 'react-intersection-observer'
 import type { NewsItem } from '@/lib/public/newsUtils'
 import NewsListCard from '@/components/public/ui/NewsListCard'

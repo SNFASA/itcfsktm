@@ -1,7 +1,7 @@
 // app/gallery/view-all/page.tsx
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import Head from 'next/head'
@@ -24,6 +24,7 @@ const scaleIn = {
 }
 
 export default function ViewAllGalleryPage() {
+  const scrollRef = useRef<HTMLDivElement>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
@@ -34,7 +35,7 @@ export default function ViewAllGalleryPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 })
+  const { ref: inViewRef, inView } = useInView({ triggerOnce: true, threshold: 0.1 })
   const router = useRouter()
 
   // Fetch data on component mount
@@ -119,12 +120,12 @@ export default function ViewAllGalleryPage() {
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
     // Scroll to top of gallery section
-    ref.current?.scrollIntoView({ behavior: 'smooth' })
+    scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen  flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="bg-white rounded-lg p-8 shadow-xl">
           <div className="flex items-center gap-4">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -137,7 +138,7 @@ export default function ViewAllGalleryPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen  flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="bg-white rounded-lg p-8 shadow-xl text-center">
           <div className="text-red-500 text-lg font-medium mb-4">{error}</div>
           <button
@@ -162,7 +163,7 @@ export default function ViewAllGalleryPage() {
       </Head>
 
       <section
-        ref={ref}
+        ref={scrollRef}
         className="relative min-h-screen py-20 overflow-hidden"
       >
         {/* Background decorative elements */}
@@ -176,6 +177,7 @@ export default function ViewAllGalleryPage() {
           
           {/* Page Title */}
           <motion.div
+            ref={inViewRef}
             className="text-center mb-12 sm:mb-16 lg:mb-20"
             variants={fadeInUp}
             initial="hidden"
@@ -319,6 +321,8 @@ export default function ViewAllGalleryPage() {
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
+                  aria-label="Previous page"
+                  title="Previous page"
                   className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 ${
                     currentPage === 1
                       ? 'text-gray-400 cursor-not-allowed'
@@ -372,6 +376,8 @@ export default function ViewAllGalleryPage() {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
+                  aria-label="Next page"
+                  title="Next page"
                   className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 ${
                     currentPage === totalPages
                       ? 'text-gray-400 cursor-not-allowed'
