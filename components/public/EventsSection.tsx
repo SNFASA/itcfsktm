@@ -125,7 +125,7 @@ export default function EventsSection() {
                   
                   {/*layer animated underline with white theme */}
                   <motion.div
-                    className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-blue to-transparent rounded-full"
+                    className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent rounded-full"
                     initial={{ width: 0 }}
                     animate={inView ? { width: '100%' } : { width: 0 }}
                     transition={{ duration: 1.2, delay: 0.8, ease: 'easeOut' }}
@@ -164,7 +164,7 @@ export default function EventsSection() {
                   animate="visible"
                   variants={fadeVariant}
                   transition={{ duration: 1, delay: 0.3 }}
-                  className="text-gray-600/90 text-base sm:text-lg lg:text-xl xl:text-2xl mt-6 sm:mt-8 max-w-4xl mx-auto font-karla leading-relaxed"
+                  className="text-gray-600 text-base sm:text-lg lg:text-xl mt-4 max-w-2xl mx-auto font-karla leading-relaxed"
                 >
                    Join us for exciting tech events, workshops, and activities throughout the year
                 </motion.p>

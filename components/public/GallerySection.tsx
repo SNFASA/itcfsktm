@@ -367,7 +367,7 @@ export default function GallerySection() {
                   animate="visible"
                   variants={fadeVariant}
                   transition={{ duration: 1, delay: 0.3 }}
-                  className="text-gray-600/90 text-base sm:text-lg lg:text-xl xl:text-2xl mt-6 sm:mt-8 max-w-4xl mx-auto font-karla leading-relaxed"
+                  className="text-gray-600 text-base sm:text-lg lg:text-xl mt-4 max-w-2xl mx-auto font-karla leading-relaxed"
                 >
                   Capturing memories from our most memorable events and activities
                 </motion.p>

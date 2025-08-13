@@ -363,12 +363,12 @@ export default function FacultyOrgChart() {
             </h3>
             
             {/* Decorative line under section title */}
-            <motion.div
+            {/*<motion.div
               className="w-24 sm:w-32 h-1 bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 rounded-full mx-auto shadow-lg"
               initial={{ width: 0, opacity: 0 }}
               animate={inView ? { width: 'auto', opacity: 1 } : { width: 0, opacity: 0 }}
               transition={{ duration: 1, delay: baseDelay + 0.3 }}
-            />
+            />*/}
             
             {/* Floating decorative elements */}
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-8">
@@ -848,7 +848,7 @@ export default function FacultyOrgChart() {
                   animate="visible"
                   variants={fadeVariant}
                   transition={{ duration: 1, delay: 0.3 }}
-                  className="text-blue-100/90 text-base sm:text-lg lg:text-xl xl:text-2xl mt-6 sm:mt-8 max-w-4xl mx-auto font-karla leading-relaxed"
+                  className="text-blue-100/90 text-base sm:text-lg lg:text-xl mt-4 max-w-2xl mx-auto font-karla leading-relaxed"
                 >
                   Excellence in leadership, innovation in education
                 </motion.p>

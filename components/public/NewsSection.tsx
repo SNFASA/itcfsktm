@@ -140,7 +140,7 @@ export default function NewsSection() {
                   animate="visible"
                   variants={fadeVariant}
                   transition={{ duration: 1, delay: 0.3 }}
-                  className="text-blue-100/90 text-base sm:text-lg lg:text-xl xl:text-2xl mt-6 sm:mt-8 max-w-4xl mx-auto font-karla leading-relaxed"
+                  className="text-white text-base sm:text-lg lg:text-xl mt-4 max-w-2xl mx-auto font-karla leading-relaxed"
                 >
                   Stay update with the lates happengs and exciting developments
                 </motion.p>
