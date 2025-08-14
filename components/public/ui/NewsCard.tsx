@@ -26,7 +26,7 @@ export default function NewsCard({
     <>
       {/* Image Section */}
       <div className={`w-full lg:w-1/2 ${imagePosition === 'right' ? 'lg:order-2' : ''}`}>
-        <div className="relative h-64 sm:h-80 lg:h-96 rounded-2xl overflow-hidden group">
+        <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 rounded-xl sm:rounded-2xl overflow-hidden group">
           <Image
             src={image}
             alt={title}
@@ -39,10 +39,10 @@ export default function NewsCard({
       
       {/* Content Section */}
       <div className={`w-full lg:w-1/2 flex flex-col justify-center ${
-        imagePosition === 'right' ? 'lg:order-1 lg:pr-8' : 'lg:pl-8'
+        imagePosition === 'right' ? 'lg:order-1 lg:pr-6 xl:pr-8' : 'lg:pl-6 xl:pl-8'
       }`}>
-        <div className="space-y-4">
-          <div className="text-blue-600 font-karla font-medium text-sm uppercase tracking-wider">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="text-blue-600 font-karla font-medium text-xs sm:text-sm uppercase tracking-wider">
             {new Date(date).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
@@ -50,17 +50,17 @@ export default function NewsCard({
             })}
           </div>
           
-          <h3 className="font-karla font-bold text-2xl sm:text-3xl lg:text-4xl text-gray-900 leading-tight group-hover:text-blue-600 transition-colors duration-300">
+          <h3 className="font-karla font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-900 leading-tight group-hover:text-blue-600 transition-colors duration-300">
             {title}
           </h3>
           
-          <p className="text-gray-600 font-karla text-lg leading-relaxed line-clamp-3">
+          <p className="text-gray-600 font-karla text-sm sm:text-base lg:text-lg leading-relaxed line-clamp-3">
             {description}
           </p>
           
           <div className="flex items-center gap-2 text-blue-600 font-karla font-semibold group-hover:gap-3 transition-all duration-300">
-            <span>Read More</span>
-            <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="text-sm sm:text-base">Read More</span>
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </div>
@@ -76,8 +76,8 @@ export default function NewsCard({
       transition={{ duration: 0.3, ease: 'easeOut' }}
     >
       <Link href={`/news/${slug}`} className="block">
-        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500">
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-center">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-2xl transition-all duration-500">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 items-center">
             {cardContent}
           </div>
         </div>
@@ -85,4 +85,3 @@ export default function NewsCard({
     </motion.div>
   )
 }
-

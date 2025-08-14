@@ -13,7 +13,7 @@ import { EventsFilter } from '@/components/public/ui/EventsFilter'
 const ITEMS_PER_PAGE = 12
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 60 },
+  hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0 },
 }
 
@@ -27,7 +27,7 @@ const staggerContainer = {
 }
 
 const slideInVariants = {
-  hidden: { opacity: 0, y: 50, scale: 0.9 },
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: { opacity: 1, y: 0, scale: 1 },
 }
 
@@ -156,18 +156,18 @@ export default function AllEventsPage() {
 
   if (loading) {
     return (
-      <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+      <main className="relative py-12 md:py-16 lg:py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-10 w-32 h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 bg-blue-600/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-48 h-48 md:w-64 md:h-64 lg:w-96 lg:h-96 bg-blue-600/3 rounded-full blur-3xl" />
         </div>
         {/* Main content container */}
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex items-center justify-center min-h-[300px] md:min-h-[400px]">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-gray-600 font-karla">Loading events...</p>
+              <div className="animate-spin rounded-full h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 border-b-2 border-primary mx-auto mb-3 md:mb-4"></div>
+              <p className="text-gray-600 font-karla text-sm md:text-base">Loading events...</p>
             </div>
           </div>
         </div>
@@ -177,24 +177,24 @@ export default function AllEventsPage() {
 
   if (error) {
     return (
-      <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+      <main className="relative py-12 md:py-16 lg:py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-10 w-32 h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 bg-blue-600/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-48 h-48 md:w-64 md:h-64 lg:w-96 lg:h-96 bg-blue-600/3 rounded-full blur-3xl" />
         </div>
         {/* Main content container */}
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex items-center justify-center min-h-[300px] md:min-h-[400px]">
             <div className="text-center">
-              <svg className="w-16 h-16 text-red-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 text-red-300 mx-auto mb-3 md:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
-              <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">Error Loading Events</h3>
-              <p className="text-gray-500 mb-4">{error}</p>
+              <h3 className="font-karla font-bold text-lg md:text-xl text-gray-900 mb-2">Error Loading Events</h3>
+              <p className="text-gray-500 mb-4 text-sm md:text-base">{error}</p>
               <button 
                 onClick={() => window.location.reload()} 
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                className="px-3 py-2 md:px-4 md:py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm md:text-base"
               >
                 Try Again
               </button>
@@ -206,11 +206,11 @@ export default function AllEventsPage() {
   }
 
   return (
-    <main className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+    <main className="relative py-12 md:py-16 lg:py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-10 w-32 h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 bg-blue-600/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-48 h-48 md:w-64 md:h-64 lg:w-96 lg:h-96 bg-blue-600/3 rounded-full blur-3xl" />
       </div>
       
       {/* Main content container */}
@@ -222,25 +222,25 @@ export default function AllEventsPage() {
           animate="visible"
           variants={fadeInUp}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12 relative z-10"
+          className="text-center mb-8 md:mb-10 lg:mb-12 relative z-10"
         >
           <motion.div
             className="inline-block relative"
             variants={fadeInUp}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            <h1 className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-blue-600 relative z-10">
+            <h1 className="font-karla font-extrabold text-2xl md:text-3xl lg:text-4xl text-blue-600 relative z-10">
               All Events & Activities
             </h1>
             <motion.div
-              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent rounded-full"
+              className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 h-0.5 bg-gradient-to-r from-transparent via-blue-600 to-transparent rounded-full"
               initial={{ width: 0 }}
               animate={inView ? { width: '100%' } : { width: 0 }}
               transition={{ duration: 1.2, delay: 0.8, ease: 'easeOut' }}
             />
           </motion.div>
           <motion.p
-            className="text-gray-600 text-base sm:text-lg lg:text-xl mt-4 max-w-2xl mx-auto font-karla"
+            className="text-gray-600 text-sm md:text-base lg:text-lg mt-3 max-w-2xl mx-auto font-karla"
             variants={fadeInUp}
             transition={{ duration: 1, delay: 0.4 }}
           >
@@ -250,12 +250,12 @@ export default function AllEventsPage() {
 
         {/* Results Summary */}
         <motion.div
-          className="mb-8 relative z-10"
+          className="mb-6 md:mb-8 relative z-10"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
-          <p className="text-gray-600 font-karla text-sm">
+          <p className="text-gray-600 font-karla text-xs md:text-sm">
             Showing {paginatedEvents.length} of {filteredAndSortedEvents.length} events
             {(searchTerm || selectedEligibility || selectedStatus) && (
               <span className="ml-2">
@@ -294,7 +294,7 @@ export default function AllEventsPage() {
         {paginatedEvents.length > 0 ? (
           <>
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 mb-12 relative z-10"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-10 lg:mb-12 relative z-10"
               variants={staggerContainer}
               initial="hidden"
               animate="visible"
@@ -306,7 +306,7 @@ export default function AllEventsPage() {
                   transition={{ duration: 0.6 }}
                   className="group relative"
                 >
-                  <div className="relative transform transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02]">
+                  <div className="relative transform transition-all duration-500 hover:-translate-y-1 hover:scale-[1.02]">
                     <EventCard
                       title={event.title}
                       date={event.date}
@@ -328,7 +328,7 @@ export default function AllEventsPage() {
             {/* Pagination */}
             {totalPages > 1 && (
               <motion.div
-                className="flex justify-center items-center space-x-2 mt-12 relative z-10"
+                className="flex justify-center items-center space-x-1 md:space-x-2 mt-8 md:mt-10 lg:mt-12 relative z-10"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.8 }}
@@ -337,7 +337,7 @@ export default function AllEventsPage() {
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  className={`px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium transition-all duration-300 text-sm md:text-base ${
                     currentPage === 1
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                       : 'bg-white text-gray-700 hover:bg-primary hover:text-white border border-gray-300'
@@ -363,7 +363,7 @@ export default function AllEventsPage() {
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                      className={`px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium transition-all duration-300 text-sm md:text-base ${
                         currentPage === pageNum
                           ? 'bg-primary text-white'
                           : 'bg-white text-gray-700 hover:bg-primary hover:text-white border border-gray-300'
@@ -376,14 +376,14 @@ export default function AllEventsPage() {
 
                 {/* Show dots if there are more pages */}
                 {totalPages > 5 && currentPage < totalPages - 2 && (
-                  <span className="px-2 text-gray-500">...</span>
+                  <span className="px-2 text-gray-500 text-sm">...</span>
                 )}
 
                 {/* Next Button */}
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  className={`px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium transition-all duration-300 text-sm md:text-base ${
                     currentPage === totalPages
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                       : 'bg-white text-gray-700 hover:bg-primary hover:text-white border border-gray-300'
@@ -395,16 +395,16 @@ export default function AllEventsPage() {
             )}
           </>
         ) : (
-          <div className="text-center py-16 relative z-10">
-            <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center py-12 md:py-16 relative z-10">
+            <svg className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 text-gray-300 mx-auto mb-3 md:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a2 2 0 012-2h8a2 2 0 012 2v4m-6 8l2-2m-2 2l-2-2m2 2V9a2 2 0 00-2-2H9a2 2 0 00-2 2v8a2 2 0 002 2h2z" />
             </svg>
-            <h3 className="font-karla font-bold text-xl text-gray-900 mb-2">No events found</h3>
-            <p className="text-gray-500 mb-4">Try adjusting your search or filter criteria.</p>
+            <h3 className="font-karla font-bold text-lg md:text-xl text-gray-900 mb-2">No events found</h3>
+            <p className="text-gray-500 mb-4 text-sm md:text-base">Try adjusting your search or filter criteria.</p>
             {(searchTerm || selectedEligibility || selectedStatus) && (
               <button
                 onClick={handleClearFilters}
-                className="px-6 py-3 text-blue-600 hover:text-white hover:bg-blue-600 transition-all duration-300 rounded-xl border border-blue-600 font-semibold"
+                className="px-4 py-2 md:px-6 md:py-3 text-blue-600 hover:text-white hover:bg-blue-600 transition-all duration-300 rounded-xl border border-blue-600 font-semibold text-sm md:text-base"
               >
                 Clear all filters
               </button>
