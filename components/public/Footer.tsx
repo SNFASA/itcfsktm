@@ -97,19 +97,17 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="relative bg-gradient-to-br from-blue-600 via-blue-600 to-blue-600/90 py-16 sm:py-20 lg:py-24 overflow-hidden">
+    <footer className="relative bg-gradient-to-br from-blue-600 via-blue-600 to-blue-600/90 py-8 sm:py-12 md:py-16 lg:py-20 overflow-hidden">
       {/* Enhanced Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 left-10 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-72 h-72 bg-white/8 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-white/3 rounded-full blur-2xl" />
-        <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-white/4 rounded-full blur-3xl" />
-        
+        <div className="absolute top-4 sm:top-6 md:top-10 left-4 sm:left-6 md:left-10 w-32 sm:w-48 md:w-64 lg:w-96 h-32 sm:h-48 md:h-64 lg:h-96 bg-white/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-8 sm:bottom-12 md:bottom-20 right-8 sm:right-12 md:right-20 w-24 sm:w-36 md:w-48 lg:w-72 h-24 sm:h-36 md:h-48 lg:h-72 bg-white/8 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/3 w-20 sm:w-28 md:w-36 lg:w-48 h-20 sm:h-28 md:h-36 lg:h-48 bg-white/3 rounded-full blur-2xl" />
+        <div className="absolute bottom-1/4 left-1/4 w-24 sm:w-32 md:w-44 lg:w-64 h-24 sm:h-32 md:h-44 lg:h-64 bg-white/4 rounded-full blur-3xl" />
         
         {/* Floating Elements */}
-
         <motion.div
-          className="absolute bottom-1/3 left-1/6 w-4 h-4 border border-white/30 rounded-full"
+          className="absolute bottom-1/3 left-1/6 w-3 h-3 sm:w-4 sm:h-4 border border-white/30 rounded-full"
           animate={{
             rotate: [0, 360, 0],
             scale: [1, 1.3, 1],
@@ -122,11 +120,11 @@ export default function Footer() {
         />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10" ref={ref}>
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 max-w-7xl relative z-10" ref={ref}>
         
         {/* Enhanced University Logos */}
         <motion.div
-          className="mb-12 sm:mb-16 lg:mb-20"
+          className="mb-8 sm:mb-10 md:mb-12 lg:mb-16"
           variants={fadeInUp}
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
@@ -134,24 +132,25 @@ export default function Footer() {
         >
           {/* Section Title */}
           <motion.div
-            className="text-center mb-12"
+            className="text-center mb-8 sm:mb-10 md:mb-12"
             variants={fadeInUp}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <h3 className="font-bold text-2xl sm:text-3xl lg:text-4xl text-white mb-4">
+            <h3 className="font-bold text-white mb-3 sm:mb-4 
+                          text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
               Our Partners
             </h3>
             <motion.div
-              className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent rounded-full mx-auto"
+              className="w-16 sm:w-20 md:w-24 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-white to-transparent rounded-full mx-auto"
               initial={{ width: 0 }}
-              animate={inView ? { width: 96 } : { width: 0 }}
+              animate={inView ? { width: "4rem" } : { width: 0 }}
               transition={{ duration: 1.2, delay: 0.8, ease: 'easeOut' }}
             />
           </motion.div>
 
-          {/* Logos Grid - Simple Version */}
+          {/* Logos Grid - Responsive */}
           <motion.div
-            className="flex flex-wrap justify-center items-center gap-8 lg:gap-12"
+            className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12"
             variants={staggerContainer}
             initial="hidden"
             animate={inView ? 'visible' : 'hidden'}
@@ -171,7 +170,12 @@ export default function Footer() {
                   alt={logo.alt}
                   width={logo.width}
                   height={logo.height}
-                  className="object-contain max-w-[200px] sm:max-w-[250px] lg:max-w-[280px] h-auto "
+                  className="object-contain h-auto 
+                           max-w-20 max-h-12
+                           sm:max-w-24 sm:max-h-14
+                           md:max-w-32 md:max-h-18
+                           lg:max-w-40 lg:max-h-20
+                           xl:max-w-48 xl:max-h-24"
                 />
               </motion.div>
             ))}
@@ -179,7 +183,7 @@ export default function Footer() {
         </motion.div>
 
         {/* Enhanced Footer Content */}
-        <div className="flex flex-col lg:flex-row justify-between items-start gap-12 lg:gap-16">
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-8 sm:gap-10 md:gap-12 lg:gap-16">
           
           {/* Enhanced Copyright Section */}
           <motion.div
@@ -190,10 +194,10 @@ export default function Footer() {
             transition={{ duration: 1, delay: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
           >
             {/* Background Decoration */}
-            <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-white/40 via-white/20 to-transparent rounded-full" />
+            <div className="absolute -left-2 sm:-left-4 top-0 w-0.5 sm:w-1 h-full bg-gradient-to-b from-white/40 via-white/20 to-transparent rounded-full" />
             
             <motion.div
-              className="relative z-10 p-6 sm:p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10"
+              className="relative z-10 p-4 sm:p-6 md:p-8 bg-white/5 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-white/10"
               whileHover={{ 
                 backgroundColor: "rgba(255, 255, 255, 0.08)",
                 borderColor: "rgba(255, 255, 255, 0.15)"
@@ -201,7 +205,8 @@ export default function Footer() {
               transition={{ duration: 0.3 }}
             >
               <motion.p 
-                className="font-medium text-sm sm:text-base lg:text-lg text-white/90 leading-relaxed"
+                className="font-medium text-white/90 leading-relaxed
+                          text-xs sm:text-sm md:text-base lg:text-lg"
                 variants={fadeInUp}
                 transition={{ duration: 0.8, delay: 1 }}
               >
@@ -229,13 +234,14 @@ export default function Footer() {
               
               {/* Last Updated */}
               <motion.div
-                className="mt-6 pt-4 border-t border-white/20"
+                className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/20"
                 variants={fadeInUp}
                 transition={{ duration: 0.8, delay: 1.2 }}
               >
-                <p className="text-sm text-white/70 flex items-center gap-2">
+                <p className="text-white/70 flex items-center gap-2
+                              text-xs sm:text-sm">
                   <motion.svg
-                    className="w-4 h-4"
+                    className="w-3 h-3 sm:w-4 sm:h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -257,7 +263,7 @@ export default function Footer() {
 
           {/* Enhanced Contact Section */}
           <motion.div
-            className="flex flex-col items-center lg:items-end gap-6 lg:gap-8"
+            className="flex flex-col items-center lg:items-end gap-4 sm:gap-6 lg:gap-8"
             variants={slideInRight}
             initial="hidden"
             animate={inView ? 'visible' : 'hidden'}
@@ -269,19 +275,21 @@ export default function Footer() {
               variants={fadeInUp}
               transition={{ duration: 0.8, delay: 1.2 }}
             >
-              <h3 className="font-bold text-2xl sm:text-3xl lg:text-4xl text-white mb-2 relative">
+              <h3 className="font-bold text-white mb-2 relative
+                           text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
                 Contact Us
                 
                 {/* Animated Underline */}
                 <motion.div
-                  className="absolute -bottom-1 left-0 lg:right-0 lg:left-auto h-1 bg-gradient-to-r from-white via-white/80 to-white/40 rounded-full"
+                  className="absolute -bottom-1 left-0 lg:right-0 lg:left-auto h-0.5 sm:h-1 bg-gradient-to-r from-white via-white/80 to-white/40 rounded-full"
                   initial={{ width: 0 }}
                   animate={inView ? { width: "100%" } : { width: 0 }}
                   transition={{ duration: 1.2, delay: 1.8, ease: 'easeOut' }}
                 />
               </h3>
               <motion.p
-                className="text-white/80 text-sm sm:text-base mt-3"
+                className="text-white/80 mt-2 sm:mt-3
+                          text-xs sm:text-sm md:text-base"
                 variants={fadeInUp}
                 transition={{ duration: 0.8, delay: 1.4 }}
               >
@@ -291,7 +299,7 @@ export default function Footer() {
             
             {/* Enhanced Social Media Icons */}
             <motion.div
-              className="flex items-center gap-4 sm:gap-6"
+              className="flex items-center gap-3 sm:gap-4 md:gap-6"
               variants={staggerContainer}
               initial="hidden"
               animate={inView ? 'visible' : 'hidden'}
@@ -299,10 +307,11 @@ export default function Footer() {
               {/* Instagram Icon */}
               <motion.a
                 href="https://www.instagram.com/itcfsktm?igsh=MTg4ZHVkdzYyZ2FhNA=="
-                className="relative group p-3 sm:p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300"
+                className="relative group rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300
+                          p-2 sm:p-3 md:p-4"
                 initial={{ scale: 1, rotate: 0 }}
                 whileHover={{ 
-                  scale: 1.2, 
+                  scale: 1.1, 
                   rotate: 10,
                   transition: {
                     duration: 0.3,
@@ -313,20 +322,19 @@ export default function Footer() {
                 transition={{ duration: 0.6, delay: 1.6 }}
               >
                 {/* Background Glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-2xl opacity-0 group-hover:opacity-100 backdrop-blur-sm transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 backdrop-blur-sm transition-opacity duration-500" />
                 
                 <motion.svg 
-                  width="48" 
-                  height="49" 
+                  className="relative z-10 transition-all duration-300 group-hover:stroke-pink-400
+                           w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
                   viewBox="0 0 56 57" 
                   fill="none" 
                   xmlns="http://www.w3.org/2000/svg"
-                  className="relative z-10 transition-all duration-300 group-hover:stroke-pink-400"
                 >
                   <path 
                     d="M40.6667 15.4375H40.6899M16.2667 4.75H39.5048C45.9218 4.75 51.1238 10.0666 51.1238 16.625V40.375C51.1238 46.9334 45.9218 52.25 39.5048 52.25H16.2667C9.84967 52.25 4.64764 46.9334 4.64764 40.375V16.625C4.64764 10.0666 9.84967 4.75 16.2667 4.75ZM37.181 27.0037C37.4678 28.9803 37.1374 30.999 36.2369 32.7727C35.3365 34.5463 33.9117 35.9846 32.1653 36.883C30.4189 37.7813 28.4398 38.094 26.5095 37.7766C24.5792 37.4591 22.796 36.5277 21.4136 35.1148C20.0311 33.7018 19.1197 31.8793 18.8091 29.9065C18.4985 27.9337 18.8044 25.911 19.6834 24.1261C20.5625 22.3413 21.9698 20.8851 23.7052 19.9648C25.4406 19.0445 27.4158 18.7069 29.3497 19C31.3225 19.299 33.1488 20.2385 34.559 21.6797C35.9692 23.121 36.8884 24.9876 37.181 27.0037Z" 
                     stroke="white" 
-                    strokeWidth="3" 
+                    strokeWidth="2.5" 
                     strokeLinecap="round" 
                     strokeLinejoin="round"
                   />
@@ -334,7 +342,7 @@ export default function Footer() {
                 
                 {/* Floating Accent */}
                 <motion.div
-                  className="absolute -top-2 -right-2 w-3 h-3 bg-pink-400 rounded-full opacity-0 group-hover:opacity-100"
+                  className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-pink-400 rounded-full opacity-0 group-hover:opacity-100"
                   animate={{
                     scale: [0, 1.2, 0],
                   }}
@@ -349,10 +357,11 @@ export default function Footer() {
               {/* Facebook Icon */}
               <motion.a
                 href="https://www.facebook.com/groups/fsktm.uthm/?ref=share&mibextid=NSMWBT"
-                className="relative group p-3 sm:p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300"
+                className="relative group rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300
+                          p-2 sm:p-3 md:p-4"
                 initial={{ scale: 1, rotate: 0 }}
                 whileHover={{ 
-                  scale: 1.2, 
+                  scale: 1.1, 
                   rotate: 10,
                   transition: {
                     duration: 0.3,
@@ -363,20 +372,19 @@ export default function Footer() {
                 transition={{ duration: 0.6, delay: 1.8 }}
               >
                 {/* Background Glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-blue-700/20 rounded-2xl opacity-0 group-hover:opacity-100 backdrop-blur-sm transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-blue-700/20 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 backdrop-blur-sm transition-opacity duration-500" />
                 
                 <motion.svg 
-                  width="48" 
-                  height="49" 
+                  className="relative z-10 transition-all duration-300 group-hover:stroke-blue-400
+                           w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
                   viewBox="0 0 56 57" 
                   fill="none" 
                   xmlns="http://www.w3.org/2000/svg"
-                  className="relative z-10 transition-all duration-300 group-hover:stroke-blue-400"
                 >
                   <path 
                     d="M42.0571 4.75H35.0857C32.0042 4.75 29.0488 6.00111 26.8698 8.22811C24.6908 10.4551 23.4667 13.4756 23.4667 16.625V23.75H16.4952V33.25H23.4667V52.25H32.7619V33.25H39.7333L42.0571 23.75H32.7619V16.625C32.7619 15.9951 33.0067 15.391 33.4425 14.9456C33.8783 14.5002 34.4694 14.25 35.0857 14.25H42.0571V4.75Z" 
                     stroke="white" 
-                    strokeWidth="3" 
+                    strokeWidth="2.5" 
                     strokeLinecap="round" 
                     strokeLinejoin="round"
                   />
@@ -384,7 +392,7 @@ export default function Footer() {
                 
                 {/* Floating Accent */}
                 <motion.div
-                  className="absolute -top-2 -right-2 w-3 h-3 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100"
+                  className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100"
                   animate={{
                     scale: [0, 1.2, 0],
                   }}
@@ -400,16 +408,17 @@ export default function Footer() {
 
             {/* Additional Contact Info */}
             <motion.div
-              className="text-center lg:text-right mt-4"
+              className="text-center lg:text-right mt-3 sm:mt-4"
               variants={fadeInUp}
               transition={{ duration: 0.8, delay: 2 }}
             >
               <motion.p
-                className="text-white/70 text-sm flex items-center gap-2 justify-center lg:justify-end"
+                className="text-white/70 flex items-center gap-2 justify-center lg:justify-end mb-2
+                          text-xs sm:text-sm"
                 whileHover={{ textShadow: "0px 0px 8px rgba(255,255,255,0.5)" }}
               >
                 <motion.svg
-                  className="w-4 h-4"
+                  className="w-3 h-3 sm:w-4 sm:h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -432,11 +441,12 @@ export default function Footer() {
                 fsktm.uthm.edu.my
               </motion.p>
               <motion.p
-                className="text-white/70 text-sm flex items-center gap-2 justify-center lg:justify-end"
+                className="text-white/70 flex items-center gap-2 justify-center lg:justify-end
+                          text-xs sm:text-sm"
                 whileHover={{ textShadow: "0px 0px 8px rgba(255,255,255,0.5)" }}
               >
                 <motion.svg
-                  className="w-4 h-4"
+                  className="w-3 h-3 sm:w-4 sm:h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -459,7 +469,7 @@ export default function Footer() {
 
         {/* Bottom Wave Animation */}
         <motion.div
-          className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+          className="absolute bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-white/30 to-transparent"
           initial={{ scaleX: 0 }}
           animate={inView ? { scaleX: 1 } : { scaleX: 0 }}
           transition={{ duration: 2, delay: 2.5, ease: 'easeOut' }}

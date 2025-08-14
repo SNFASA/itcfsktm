@@ -1,3 +1,4 @@
+// EventCard.tsx
 'use client'
 
 import Image from 'next/image'
@@ -137,10 +138,10 @@ export default function EventCard({
 
   return (
     <div 
-      className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 ease-out transform hover:-translate-y-2 border border-gray-100 h-fit flex flex-col"
+      className="group relative bg-white rounded-lg md:rounded-xl lg:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl md:hover:shadow-2xl transition-all duration-300 md:duration-500 lg:duration-700 ease-out transform hover:-translate-y-1 md:hover:-translate-y-2 border border-gray-100 h-fit flex flex-col"
     >
       {/* Gradient Overlay for Modern Look */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10" />
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:duration-500 pointer-events-none z-10" />
       
       {/* Image Container with Flexible Height */}
       <div className="relative w-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 flex-shrink-0">
@@ -149,12 +150,12 @@ export default function EventCard({
             src={displayImage}
             alt={`Event image for ${title}`}
             width={400}
-            height={300}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-            className="w-full h-auto object-contain transition-all duration-700 ease-out group-hover:scale-105 group-hover:brightness-110 bg-white"
+            height={240}
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="w-full h-auto object-cover transition-all duration-500 md:duration-700 ease-out group-hover:scale-105 group-hover:brightness-110 bg-white"
             style={{
-              maxHeight: '400px',
-              minHeight: '200px',
+              maxHeight: '200px',
+              minHeight: '150px',
             }}
             onError={handleImageError}
             onLoad={handleImageLoad}
@@ -163,11 +164,11 @@ export default function EventCard({
         </div>
         
         {/* Gradient Overlay on Image */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:duration-500" />
         
         {/* Coming Soon / Status Badge */}
         {isEventComingSoon && (
-          <div className="absolute top-4 right-4 z-20">
+          <div className="absolute top-2 md:top-3 lg:top-4 right-2 md:right-3 lg:right-4 z-20">
             <div className="relative">
               <div className={`absolute inset-0 ${
                 status === 'upcoming' ? 'bg-gradient-to-r from-amber-400 to-orange-500' :
@@ -176,56 +177,58 @@ export default function EventCard({
                 status === 'cancelled' ? 'bg-gradient-to-r from-red-400 to-rose-500' :
                 'bg-gradient-to-r from-amber-400 to-orange-500'
               } rounded-full blur opacity-75 animate-pulse`} />
-              <span className={`relative inline-flex items-center gap-1.5 ${
+              <span className={`relative inline-flex items-center gap-1 md:gap-1.5 ${
                 status === 'upcoming' ? 'bg-gradient-to-r from-amber-400 to-orange-500' :
                 status === 'ongoing' ? 'bg-gradient-to-r from-green-400 to-emerald-500' :
                 status === 'completed' ? 'bg-gradient-to-r from-gray-400 to-slate-500' :
                 status === 'cancelled' ? 'bg-gradient-to-r from-red-400 to-rose-500' :
                 'bg-gradient-to-r from-amber-400 to-orange-500'
-              } text-white text-xs font-bold px-3 py-2 rounded-full shadow-lg backdrop-blur-sm`}>
-                <span className="w-2 h-2 bg-white rounded-full animate-bounce" />
-                {status === 'upcoming' ? 'Coming Soon' :
-                 status === 'ongoing' ? 'Ongoing' :
-                 status === 'completed' ? 'Completed' :
-                 status === 'cancelled' ? 'Cancelled' :
-                 'Coming Soon'}
+              } text-white text-xs font-bold px-2 py-1 md:px-3 md:py-2 rounded-full shadow-lg backdrop-blur-sm`}>
+                <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full animate-bounce" />
+                <span className="text-xs">
+                  {status === 'upcoming' ? 'Coming Soon' :
+                   status === 'ongoing' ? 'Ongoing' :
+                   status === 'completed' ? 'Completed' :
+                   status === 'cancelled' ? 'Cancelled' :
+                   'Coming Soon'}
+                </span>
               </span>
             </div>
           </div>
         )}
         
         {/* Eligibility Badge */}
-        <div className="absolute top-4 left-4 z-20">
+        <div className="absolute top-2 md:top-3 lg:top-4 left-2 md:left-3 lg:left-4 z-20">
           <div className="relative">
             <div className={`absolute inset-0 ${eligibilityConfig.bg} rounded-full blur opacity-50`} />
-            <span className={`relative inline-flex items-center gap-1.5 ${eligibilityConfig.bg} ${eligibilityConfig.text} text-xs font-semibold px-3 py-2 rounded-full shadow-lg backdrop-blur-sm`}>
-              <span>{eligibilityConfig.icon}</span>
-              {eligibilityConfig.label}
+            <span className={`relative inline-flex items-center gap-1 md:gap-1.5 ${eligibilityConfig.bg} ${eligibilityConfig.text} text-xs font-semibold px-2 py-1 md:px-3 md:py-2 rounded-full shadow-lg backdrop-blur-sm`}>
+              <span className="text-xs">{eligibilityConfig.icon}</span>
+              <span className="text-xs hidden sm:inline">{eligibilityConfig.label}</span>
             </span>
           </div>
         </div>
       </div>
 
       {/* Content Section - Takes remaining space */}
-      <div className="p-6 space-y-4 flex-grow flex flex-col">
+      <div className="p-3 md:p-4 lg:p-6 space-y-3 md:space-y-4 flex-grow flex flex-col">
         {/* Header */}
-        <div className="space-y-3">
-          <h3 className="font-bold text-xl text-gray-900 leading-tight group-hover:text-blue-700 transition-colors duration-300 line-clamp-2">
+        <div className="space-y-2 md:space-y-3">
+          <h3 className="font-bold text-base md:text-lg lg:text-xl text-gray-900 leading-tight group-hover:text-blue-700 transition-colors duration-300 line-clamp-2">
             {title}
           </h3>
           
           {/* Event Info */}
-          <div className="space-y-2 text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <span>📅</span>
+          <div className="space-y-1 md:space-y-2 text-xs md:text-sm text-gray-600">
+            <div className="flex items-center gap-1 md:gap-2">
+              <span className="text-sm">📅</span>
               <time className="font-medium">{formatDate(date)}</time>
             </div>
-            <div className="flex items-center gap-2">
-              <span>⏰</span>
+            <div className="flex items-center gap-1 md:gap-2">
+              <span className="text-sm">⏰</span>
               <span className="font-medium">{time}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span>📍</span>
+            <div className="flex items-center gap-1 md:gap-2">
+              <span className="text-sm">📍</span>
               <span className="font-medium truncate">{location}</span>
             </div>
           </div>
@@ -233,13 +236,13 @@ export default function EventCard({
 
         {/* Description */}
         <div className="flex-grow">
-          <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
+          <p className="text-gray-600 text-xs md:text-sm leading-relaxed line-clamp-3">
             {description}
           </p>
         </div>
 
         {/* Action Buttons - Always at bottom */}
-        <div className="flex gap-3 pt-2 mt-auto">
+        <div className="flex gap-2 md:gap-3 pt-2 mt-auto">
           <button
             onClick={onRegister}
             disabled={status === 'completed' || status === 'cancelled'}
@@ -247,43 +250,45 @@ export default function EventCard({
               status === 'completed' || status === 'cancelled' 
                 ? 'bg-gray-400 cursor-not-allowed' 
                 : 'bg-blue-600 hover:from-blue-700 hover:to-purple-700 transform hover:scale-105'
-            } text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl group/btn overflow-hidden`}
+            } text-white font-semibold py-2 md:py-3 px-2 md:px-4 rounded-lg md:rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl group/btn overflow-hidden`}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
-            <span className="relative flex items-center justify-center gap-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="relative flex items-center justify-center gap-1 md:gap-2">
+              <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              {status === 'completed' ? 'Completed' : 
-               status === 'cancelled' ? 'Cancelled' :
-               registration_required ? 'Register' : 'Join'}
+              <span className="text-xs md:text-sm">
+                {status === 'completed' ? 'Completed' : 
+                 status === 'cancelled' ? 'Cancelled' :
+                 registration_required ? 'Register' : 'Join'}
+              </span>
             </span>
           </button>
           
           <button
             onClick={handleDetailsClick}
-            className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 group/details"
+            className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 md:py-3 px-2 md:px-4 rounded-lg md:rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 group/details"
           >
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-1 md:gap-2">
               {onViewDetails ? (
                 <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
-                  View
+                  <span className="text-xs md:text-sm">View</span>
                 </>
               ) : (
                 <>
                   <svg 
-                    className={`w-4 h-4 transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`} 
+                    className={`w-3 h-3 md:w-4 md:h-4 transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`} 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
-                  {showDetails ? 'Hide' : 'Details'}
+                  <span className="text-xs md:text-sm">{showDetails ? 'Hide' : 'Details'}</span>
                 </>
               )}
             </span>
@@ -294,58 +299,58 @@ export default function EventCard({
       {/* Expandable Details (only show if no onViewDetails handler) */}
       {!onViewDetails && (
         <div className={`overflow-hidden transition-all duration-500 ease-out ${showDetails ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
-          <div className="bg-gradient-to-r from-gray-50 to-blue-50/30 border-t border-gray-200 p-6 space-y-4">
+          <div className="bg-gradient-to-r from-gray-50 to-blue-50/30 border-t border-gray-200 p-3 md:p-4 lg:p-6 space-y-3 md:space-y-4">
             {details?.agenda && (
-              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                <h4 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
+              <div className="bg-white rounded-lg p-3 md:p-4 shadow-sm border border-gray-100">
+                <h4 className="font-semibold text-gray-800 mb-2 flex items-center gap-1 md:gap-2 text-sm md:text-base">
                   <span>📋</span>
                   Agenda
                 </h4>
-                <p className="text-gray-600 text-sm leading-relaxed">{details.agenda}</p>
+                <p className="text-gray-600 text-xs md:text-sm leading-relaxed">{details.agenda}</p>
               </div>
             )}
             
             {/* Feature List */}
-            <div className="space-y-2">
+            <div className="space-y-1 md:space-y-2">
               {details?.isFree && (
-                <div className="flex items-center gap-2 text-green-700">
+                <div className="flex items-center gap-1 md:gap-2 text-green-700">
                   <span>💰</span>
-                  <span className="font-medium text-sm">Free Event</span>
+                  <span className="font-medium text-xs md:text-sm">Free Event</span>
                 </div>
               )}
               
               {details?.hasCertificate && (
-                <div className="flex items-center gap-2 text-blue-700">
+                <div className="flex items-center gap-1 md:gap-2 text-blue-700">
                   <span>🏆</span>
-                  <span className="font-medium text-sm">Certificate Provided</span>
+                  <span className="font-medium text-xs md:text-sm">Certificate Provided</span>
                 </div>
               )}
               
               {details?.hasRefreshments && (
-                <div className="flex items-center gap-2 text-orange-700">
+                <div className="flex items-center gap-1 md:gap-2 text-orange-700">
                   <span>🍽️</span>
-                  <span className="font-medium text-sm">Refreshments Included</span>
+                  <span className="font-medium text-xs md:text-sm">Refreshments Included</span>
                 </div>
               )}
               
               {details?.hasTransportation && (
-                <div className="flex items-center gap-2 text-purple-700">
+                <div className="flex items-center gap-1 md:gap-2 text-purple-700">
                   <span>🚌</span>
-                  <span className="font-medium text-sm">Transportation Provided</span>
+                  <span className="font-medium text-xs md:text-sm">Transportation Provided</span>
                 </div>
               )}
               
               {details?.isOnline && (
-                <div className="flex items-center gap-2 text-indigo-700">
+                <div className="flex items-center gap-1 md:gap-2 text-indigo-700">
                   <span>💻</span>
-                  <span className="font-medium text-sm">Online Event</span>
+                  <span className="font-medium text-xs md:text-sm">Online Event</span>
                 </div>
               )}
               
               {details?.isLimited && (
-                <div className="flex items-center gap-2 text-red-700">
+                <div className="flex items-center gap-1 md:gap-2 text-red-700">
                   <span>⚡</span>
-                  <span className="font-medium text-sm">Limited Seats</span>
+                  <span className="font-medium text-xs md:text-sm">Limited Seats</span>
                 </div>
               )}
             </div>

@@ -1,3 +1,4 @@
+// components/public/EventsSection.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -13,13 +14,13 @@ export default function EventsSection() {
     threshold: 0.1,
   })
     const fadeVariant = {
-    hidden: { opacity: 0, y: 60 },
+    hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -30 },
+    exit: { opacity: 0, y: -20 },
   }
 
   const fadeInUpSection = {
-    hidden: { opacity: 0, y: 60 },
+    hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 },
   }
 
@@ -62,7 +63,7 @@ export default function EventsSection() {
   }
 
   const fadeInUp = {
-    hidden: { opacity: 0, y: 60 },
+    hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 },
   }
 
@@ -76,12 +77,12 @@ export default function EventsSection() {
   }
 
   const slideInVariants = {
-    hidden: { opacity: 0, y: 50, scale: 0.9 },
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
     visible: { opacity: 1, y: 0, scale: 1 },
   }
 
   const buttonVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   }
 
@@ -89,12 +90,12 @@ export default function EventsSection() {
     <section
       id="events"
       ref={ref}
-      className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden"
+      className="relative py-12 md:py-16 lg:py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden"
     >
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-10 w-32 h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 bg-blue-600/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-48 h-48 md:w-64 md:h-64 lg:w-96 lg:h-96 bg-blue-600/3 rounded-full blur-3xl" />
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
@@ -106,11 +107,11 @@ export default function EventsSection() {
                 exit="exit"
                 variants={fadeVariant}
                 transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-center mb-16 sm:mb-20 lg:mb-24"
+                className="text-center mb-10 md:mb-12 lg:mb-16"
               >
                 <div className="relative inline-block">
                   <motion.h2 
-                    className="font-karla font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl text-blue-600 relative z-10 tracking-tight leading-tight"
+                    className="font-karla font-extrabold text-2xl md:text-3xl lg:text-4xl text-blue-600 relative z-10 tracking-tight leading-tight"
                     whileHover={{
                       scale: 1.02,
                       textShadow: "0 0 30px rgba(255, 255, 255, 0.8)"
@@ -125,7 +126,7 @@ export default function EventsSection() {
                   
                   {/*layer animated underline with white theme */}
                   <motion.div
-                    className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent rounded-full"
+                    className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 h-0.5 bg-gradient-to-r from-transparent via-blue-600 to-transparent rounded-full"
                     initial={{ width: 0 }}
                     animate={inView ? { width: '100%' } : { width: 0 }}
                     transition={{ duration: 1.2, delay: 0.8, ease: 'easeOut' }}
@@ -164,22 +165,22 @@ export default function EventsSection() {
                   animate="visible"
                   variants={fadeVariant}
                   transition={{ duration: 1, delay: 0.3 }}
-                  className="text-gray-600 text-base sm:text-lg lg:text-xl mt-4 max-w-2xl mx-auto font-karla leading-relaxed"
+                  className="text-gray-600 text-sm md:text-base lg:text-lg mt-3 max-w-2xl mx-auto font-karla leading-relaxed"
                 >
                    Join us for exciting tech events, workshops, and activities throughout the year
                 </motion.p>
                 
                 {/* Enhanced decorative elements around title */}
                 <motion.div
-                  className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-8 sm:-translate-y-12"
+                  className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 md:-translate-y-8"
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.8, delay: 1.2 }}
                 >
                   <motion.div 
-                    className="flex items-center gap-2 sm:gap-3"
+                    className="flex items-center gap-1.5 md:gap-2"
                     animate={{
-                      y: [0, -8, 0],
+                      y: [0, -6, 0],
                     }}
                     transition={{
                       duration: 4,
@@ -188,7 +189,7 @@ export default function EventsSection() {
                     }}
                   >
                     <motion.div 
-                      className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-300/70 rounded-full shadow-lg"
+                      className="w-1.5 h-1.5 md:w-2 md:h-2 bg-blue-300/70 rounded-full shadow-lg"
                       animate={{
                         scale: [1, 1.3, 1],
                         opacity: [0.7, 1, 0.7]
@@ -200,7 +201,7 @@ export default function EventsSection() {
                       }}
                     />
                     <motion.div 
-                      className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-200/60 rounded-full shadow-md"
+                      className="w-1 h-1 md:w-1.5 md:h-1.5 bg-blue-200/60 rounded-full shadow-md"
                       animate={{
                         scale: [1, 1.2, 1],
                         opacity: [0.6, 1, 0.6]
@@ -213,7 +214,7 @@ export default function EventsSection() {
                       }}
                     />
                     <motion.div 
-                      className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-blue-100/50 rounded-full shadow-sm"
+                      className="w-0.5 h-0.5 md:w-1 md:h-1 bg-blue-100/50 rounded-full shadow-sm"
                       animate={{
                         scale: [1, 1.4, 1],
                         opacity: [0.5, 1, 0.5]
@@ -230,10 +231,10 @@ export default function EventsSection() {
                 
                 {/* Side floating elements */}
                 <motion.div
-                  className="absolute top-1/2 -left-8 sm:-left-12 transform -translate-y-1/2"
+                  className="absolute top-1/2 -left-6 md:-left-8 transform -translate-y-1/2"
                   animate={{
-                    x: [0, 10, 0],
-                    y: [0, -15, 0],
+                    x: [0, 8, 0],
+                    y: [0, -12, 0],
                     rotate: [0, 360]
                   }}
                   transition={{
@@ -242,13 +243,13 @@ export default function EventsSection() {
                     ease: "easeInOut"
                   }}
                 >
-                  <div className="w-2 h-2 bg-gray-300/50 rounded-full shadow-lg" />
+                  <div className="w-1.5 h-1.5 bg-gray-300/50 rounded-full shadow-lg" />
                 </motion.div>
                 <motion.div
-                  className="absolute top-1/2 -right-8 sm:-right-12 transform -translate-y-1/2"
+                  className="absolute top-1/2 -right-6 md:-right-8 transform -translate-y-1/2"
                   animate={{
-                    x: [0, -10, 0],
-                    y: [0, 15, 0],
+                    x: [0, -8, 0],
+                    y: [0, 12, 0],
                     rotate: [0, -360]
                   }}
                   transition={{
@@ -258,22 +259,22 @@ export default function EventsSection() {
                     delay: 2
                   }}
                 >
-                  <div className="w-1.5 h-1.5 bg-gray-200/60 rounded-full shadow-md" />
+                  <div className="w-1 h-1 bg-gray-200/60 rounded-full shadow-md" />
                 </motion.div>
               </motion.div>
         {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            <p className="text-center text-gray-500 font-karla text-lg mt-4">Loading events...</p>
+          <div className="text-center py-8 md:py-12">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 md:h-10 md:w-10 border-b-2 border-primary"></div>
+            <p className="text-center text-gray-500 font-karla text-base md:text-lg mt-3">Loading events...</p>
           </div>
         ) : events.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 font-karla text-lg">No events available at the moment.</p>
+          <div className="text-center py-8 md:py-12">
+            <p className="text-gray-500 font-karla text-base md:text-lg">No events available at the moment.</p>
           </div>
         ) : (
           <>
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 lg:gap-10"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8"
               variants={staggerContainer}
               initial="hidden"
               animate={inView ? 'visible' : 'hidden'}
@@ -285,11 +286,11 @@ export default function EventsSection() {
                   transition={{ duration: 0.6 }}
                   className="group relative"
                 >
-                  <div className="absolute -top-3 -left-3 z-20 w-8 h-8 bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-white/80 font-bold text-sm">{index + 1}</span>
+                  <div className="absolute -top-2 -left-2 z-20 w-6 h-6 md:w-7 md:h-7 bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform duration-300">
+                    <span className="text-white/80 font-bold text-xs md:text-sm">{index + 1}</span>
                   </div>
 
-                  <div className="relative transform transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02]">
+                  <div className="relative transform transition-all duration-500 hover:-translate-y-1 hover:scale-[1.02]">
                     <EventCard
                       key={event.id}
                       title={event.title}
@@ -311,7 +312,7 @@ export default function EventsSection() {
 
             {/* View All Events Button */}
             <motion.div
-              className="text-center mt-12 sm:mt-16 lg:mt-20"
+              className="text-center mt-8 md:mt-12 lg:mt-16"
               variants={fadeInUpSection}
               initial="hidden"
               animate={inView ? 'visible' : 'hidden'}
@@ -319,10 +320,10 @@ export default function EventsSection() {
             >
               <button
                 onClick={handleViewAllEvents}
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 md:px-8 py-3 md:py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm md:text-base"
               >
                 View All Events
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
